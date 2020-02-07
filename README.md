@@ -14,7 +14,7 @@ Userscript for improving ESS Timesheet usability
 
 ## Preview
 #### Before
-This is how ESS looks without the userscript
+This is how ESS looks without the userscript :man_facepalming:
 ![Preview](images/ess-raw.png)
 
 #### After
