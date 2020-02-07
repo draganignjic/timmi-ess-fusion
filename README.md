@@ -17,6 +17,8 @@ This is how ESS looks without the userscript
 
 This is how ESS looks with the userscript
 ![Preview](images/preview.png)
+
+This is how ESS looks in combination with Timmi Timesheet
 ![](images/video.gif)
 
 ## Features
