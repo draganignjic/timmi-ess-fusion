@@ -28,6 +28,7 @@ This is how ESS looks with the userscript
 - Fullscreen
 
 ## Features for employees that use Timmi Timesheet as well (Switzerland)
+- ESS is embedded in Timmi
 - Synchronization of workhours. ESS shows you the differences that you need to book on projects
 - Book all remaining hours with one click on a project
 - "Check for Updates" Feature
