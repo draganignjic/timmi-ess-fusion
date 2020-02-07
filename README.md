@@ -17,6 +17,7 @@ This is how ESS looks without the userscript
 
 This is how ESS looks with the userscript
 ![Preview](images/preview.png)
+![](images/video.gif)
 
 ## Features
 - Chrome and Firefox support for approve/reject colors
