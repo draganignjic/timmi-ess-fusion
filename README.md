@@ -7,14 +7,16 @@ Userscript for improving ESS Timesheet usability
 
 :two: Open [timmi-ess-fusion.user.js](https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js)
 
-:three: ![Preview](images/install.png)
+:three: Click on Install
+![Preview](images/install.png)
 
 ### Firefox
 :one: [Tampermonkey Browser Extension](https://addons.mozilla.org/de/firefox/addon/tampermonkey/) needs to be installed
 
 :two: Open [timmi-ess-fusion.user.js](https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js)
 
-:three:![Preview](images/install.png)
+:three:Click on Install
+![Preview](images/install.png)
 
 ## Preview
 #### Before
