@@ -18,10 +18,6 @@ This is how ESS looks without the userscript
 This is how ESS looks with the userscript
 ![Preview](images/preview.png)
 
-This is how ESS looks in combination with Timmi
-![Preview](images/video.gif)
-
-
 ## Features
 - Display approve/reject colors in all Browsers (not just IE)
 - Favourites
