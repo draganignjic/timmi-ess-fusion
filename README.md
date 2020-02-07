@@ -13,10 +13,12 @@ Userscript for improving ESS Timesheet usability
 3. ![Preview](images/install.png)
 
 ## Preview
-### Before
+#### Before
+This is how ESS looks without the userscript
 ![Preview](images/ess-raw.png)
 
-### After
+#### After
+This is how ESS looks with the userscript
 ![Preview](images/preview.png)
 
 This is how ESS looks in combination with Timmi Timesheet
@@ -41,5 +43,5 @@ This is how ESS looks in combination with Timmi Timesheet
 - Maximize ESS to see the weekend
 
 
-### Credits
+#### Credits
 Dragan Ignjic
