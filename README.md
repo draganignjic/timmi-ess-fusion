@@ -19,16 +19,16 @@ This is how ESS looks with the userscript
 ![Preview](images/preview.png)
 
 ## Features
-- Display approve/reject colors in all Browsers (not just IE)
-- Favourites
+- Chrome and Firefox support for approve/reject colors
+- Favourites (Save workitems and give them meaningful names)
 - ESS is displayed beautifully in all browsers
 - Enter worktime with "." or ","
-- Save on Enter Button
+- Save on Enter Key
 - No Session Timeout
 - Fullscreen
 
 ## Features for employees that use Timmi Timesheet as well (Switzerland)
-- Synchronization of workhours. ESS shows you the differences that you need to book on projects (only for users which use Timmi Timesheet as well (employees from switzerland)
+- Synchronization of workhours. ESS shows you the differences that you need to book on projects
 - Book all remaining hours with one click on a project
 - "Check for Updates" Feature
 - Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
