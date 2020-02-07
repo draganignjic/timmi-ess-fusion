@@ -20,7 +20,7 @@ This is how ESS looks without the userscript
 
 
 ## Features
-- Display colors in all Browsers (
+- Display approve/reject colors in all Browsers (not just IE)
 - Favourites
 - ESS is displayed beautifully in all browsers
 - Enter worktime with "." or ","
