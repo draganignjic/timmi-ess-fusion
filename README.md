@@ -26,20 +26,20 @@ This is how ESS looks in combination with Timmi Timesheet
 
 ## Features
 - Fullscreen Mode
-- - To get rid of scrollbars
+  - To get rid of scrollbars
 - Chrome and Firefox support
-- - See saved, released, approved and reject colors
-- - Day titles are aligned correctly
+  - See saved, released, approved and reject colors
+  - Day titles are aligned correctly
 - Favourites
-- - Save workitems
-- - Give them meaningful names
-- - Select them with one click at the top of the worklist
+  - Save workitems
+  - Give them meaningful names
+  - Select them with one click at the top of the worklist
 - Design
-- - ESS is displayed beautifully in all browsers
+  - ESS is displayed beautifully in all browsers
 - Usability
-- - Enter worktime with "." or ","
-- - Save with pressing the Enter Key
-- - No Session Timeout
+  - Enter worktime with "." or ","
+  - Save with pressing the Enter Key
+  - No Session Timeout
 
 ## Features for employees that use Timmi Timesheet as well (Switzerland)
 - ESS is embedded in Timmi
