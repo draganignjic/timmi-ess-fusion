@@ -40,15 +40,16 @@ This is how ESS looks in combination with Timmi Timesheet
   - Enter worktime with "." or ","
   - Save with pressing the Enter Key
   - No Session Timeout
+  - Weeks selection shortcuts/overview
 
-## Features for employees that use Timmi Timesheet as well (Switzerland)
-- ESS is embedded in Timmi
-- Synchronization of workhours. ESS shows you the differences that you need to book on projects
-- Book all remaining hours with one click on a project
-- "Check for Updates" Feature
-- Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
-- Hide the weekend
-- Maximize ESS to see the weekend
+- Timmi Timesheet integration (For employees in Switzerland) 
+  - ESS is embedded in Timmi
+  - Synchronization of workhours. ESS shows you the differences that you need to book on projects
+  - Book all remaining hours with one click on a project
+  - "Check for Updates" Feature
+  - Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
+  - Hide the weekend
+  - Maximize ESS to see the weekend
 
 
 #### Credits
