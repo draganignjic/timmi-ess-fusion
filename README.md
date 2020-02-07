@@ -27,7 +27,7 @@ This is how ESS looks without the userscript :see_no_evil: :man_facepalming:
 This is how ESS looks with the userscript :heart_eyes:
 ![Preview](images/preview.png)
 
-This is how ESS works in combination with Timmi Timesheet 
+This is how ESS works in combination with Timmi Timesheet :scream:
 ![](images/video.gif)
 
 ## Features
