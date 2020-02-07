@@ -3,13 +3,13 @@ Userscript for improving ESS Timesheet usability
 
 ## Installation 
 ### Chrome
-1. https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
-2. https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
+1. [Tampermonkey Browser Extension](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) needs to be installed
+2. Open [timmi-ess-fusion.user.js](https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js)
 3. ![Preview](images/install.png)
 
 ### Firefox
-1. https://addons.mozilla.org/de/firefox/addon/tampermonkey/
-2. https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
+1. [Tampermonkey Browser Extension](https://addons.mozilla.org/de/firefox/addon/tampermonkey/) needs to be installed
+2. Open [timmi-ess-fusion.user.js](https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js)
 3. ![Preview](images/install.png)
 
 ## Preview
