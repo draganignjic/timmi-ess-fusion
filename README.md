@@ -1,12 +1,13 @@
 # Timmi ESS Fusion
-Userscript for improving ESS usability
+Userscript for improving ESS Timesheet usability
 
-## Installation Chrome
+## Installation 
+### Chrome
 1. https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en
 2. https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
 3. ![Preview](images/install.png)
 
-## Installation Firefox
+### Firefox
 1. https://addons.mozilla.org/de/firefox/addon/tampermonkey/
 2. https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
 3. ![Preview](images/install.png)
