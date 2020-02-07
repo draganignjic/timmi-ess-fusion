@@ -16,7 +16,7 @@ This is how ESS looks with the userscript
 ![Preview](images/preview.png)
 
 This is how ESS looks without the userscript
-![Preview](images/raw-ess.png)
+![Preview](images/ess-raw.png)
 
 
 ## Features
