@@ -13,10 +13,10 @@ Userscript for improving ESS Timesheet usability
 3. ![Preview](images/install.png)
 
 ## Preview
-This is how ESS looks without the userscript
+### Before
 ![Preview](images/ess-raw.png)
 
-This is how ESS looks with the userscript
+### After
 ![Preview](images/preview.png)
 
 This is how ESS looks in combination with Timmi Timesheet
