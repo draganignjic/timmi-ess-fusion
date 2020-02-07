@@ -17,6 +17,7 @@ This is how ESS looks with the userscript
 
 
 ## Features
+- Display colors in all Browsers (
 - Favourites
 - ESS is displayed beautifully in all browsers
 - Enter worktime with "." or ","
@@ -33,4 +34,5 @@ This is how ESS looks with the userscript
 - Maximize ESS to see the weekend
 
 
+### Credits
 Dragan Ignjic
