@@ -9,4 +9,4 @@ Userscript for improving ESS usability
 1. https://addons.mozilla.org/de/firefox/addon/tampermonkey/
 2. 
 
-![Preview](Timmi-ESS-Fusion-Preview.png)
+![Preview](preview.png)
