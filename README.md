@@ -12,11 +12,14 @@ Userscript for improving ESS usability
 3. ![Preview](images/install.png)
 
 ## Preview
+This is how ESS looks without the userscript
+![Preview](images/ess-raw.png)
+
 This is how ESS looks with the userscript
 ![Preview](images/preview.png)
 
-This is how ESS looks without the userscript
-![Preview](images/ess-raw.png)
+This is how ESS looks in combination with Timmi
+![Preview](images/video.gif)
 
 
 ## Features
