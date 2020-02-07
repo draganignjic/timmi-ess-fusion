@@ -31,3 +31,6 @@ This is how ESS looks with the userscript
 - Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
 - Hide the weekend
 - Maximize ESS to see the weekend
+
+
+Dragan Ignjic
