@@ -11,4 +11,23 @@ Userscript for improving ESS usability
 2. https://github.com/draganignjic/timmi-ess-fusion/raw/master/timmi-ess-fusion.user.js
 3. ![Preview](images/install.png)
 
+## Preview
+This is how ESS looks with the userscript
 ![Preview](images/preview.png)
+
+
+## Features
+- Favourites
+- ESS is displayed beautifully in all browsers
+- Enter worktime with "." or ","
+- Save on Enter Button
+- No Session Timeout
+- Fullscreen
+
+## Features for employees that use Timmi Timesheet as well (Switzerland)
+- Synchronization of workhours. ESS shows you the differences that you need to book on projects (only for users which use Timmi Timesheet as well (employees from switzerland)
+- Book all remaining hours with one click on a project
+- "Check for Updates" Feature
+- Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
+- Hide the weekend
+- Maximize ESS to see the weekend
