@@ -1,6 +1,8 @@
 # Timmi ESS Fusion
 Userscript for improving ESS Timesheet usability
 
+<img src="images/preview.png" width="200" />
+
 ## Installation 
 ### Chrome
 1. [Tampermonkey Browser Extension](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) needs to be installed
