@@ -30,7 +30,7 @@ This is how ESS looks with the userscript :heart_eyes:
 ![Preview](images/preview.png)
 
 This is how ESS works in combination with Timmi Timesheet :scream:
-![](images/video.gif)
+![](images/video2.gif)
 
 ## Features
 - Fullscreen Mode
