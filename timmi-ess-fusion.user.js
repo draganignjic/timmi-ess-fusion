@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
-// @namespace    http://qa.saferpay.com/timesheet
-// @version      0.6.5
-// @description  Embed ESS in Lucca Timmi
+// @namespace    https://github.com/draganignjic/timmi-ess-fusion/
+// @version      0.6.6
+// @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
 // @include      /sps.ilucca.ch/timmi
@@ -438,7 +438,9 @@
         return ($('form[name="loginForm"]').length > 0
                 || $('*:contains("Session not found")').length > 0
                 || $('*:contains("Session does not exist")').length > 0
+                || $('*:contains("Session timed out")').length > 0
                 || $('*:contains("session is expired")').length > 0);
+        
     }
 
     function enableEnterKeySave(){
