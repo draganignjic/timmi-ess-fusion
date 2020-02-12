@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Timmi ESS Fusion
+// @name         immi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
 // @version      0.6.6
 // @description  Embed ESS Timesheet in Lucca Timmi
