@@ -418,7 +418,7 @@
         var row = $('#employee_kostl_l').closest('tr');
         row.css('white-space', 'nowrap');
 
-        var link = $('<td><a style="font-family:arial;font-size:12px;" href="' + self.location.href + '" target="_blank">Fullscreen</a></td>');
+        var link = $('<td><a style="font-family:arial;font-size:12px;" href="' + self.location.href + '" target="_top">Fullscreen</a></td>');
         row.append(link);
 
         var isSaferpayUser = row.find('span:contains("CH08804041")').length === 1;
