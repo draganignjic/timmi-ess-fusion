@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.6
+// @version      0.6.7
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -16,9 +16,10 @@
 
 (async () => {
 
-    let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
+	let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
     let _essLoginUrl = "https://www.myatos.net/irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1578481318556&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet%20entry&NavMode=10";
-    let _essStartUrl = "https://perf.myatos.net/sap(ZT1ZOTVDWmVPR3lsRWZ1eGVkRmxqR3JBLS1QNURkNVd0akcqVTFYTjRreU4zRkxBLS0=)/bc/bsp/sap/ZCA_TIMESHEET/ZCA_TIMESHEET_STD.do?sap-syscmd=nocookie&sap-client=360&sap-language=EN&style_sheet=https%3A%2F%2Fwww.myatos.net%3A443%2Fcom.sap.portal.design.urdesigndata%2Fthemes%2Fportal%2FAtosBlue74%2Fur%2Fur_sf3.css%3Fv%3D10.30.7.263200.1492784748000&sap-cssversion=10.30.7.263200.0&sap-tray-type=PLAIN&sap-tray-padding=X&sap-accessibility=&sap-ep-version=7.40.201507141901&sap_ep_version=7.40.201507141901&sap_ep_baseurl=https%3A%2F%2Fwww.myatos.net%3A443%2Firj%2Fportal&sap-ie=EmulateIE8";
+    let _essLegacyLoginUrl = "https://www.myatos.net/irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1580893319809&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet entry&NavMode=10";
+    let _essStartUrl = "https://perf.myatos.net/sap(ZT1ZOTVDWmVPR3lsRWZ1eGVkRmxqR3JBLS1QNURkNVd0akcqVTFYTjRreU4zRkxBLS0=)/bc/bsp/sap/ZCA_TIMESHEET/ZCA_TIMESHEET_STD.do";
     let _saferpayLogo = "data:image/png;base64,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";
     let _wbsLookupLink = 'https://confluence-wdtool01.v12.p01.ocp.six-group.net/display/SFRP/WBS+Lookup';
     let _faviconEmpty = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAN9SURBVDhPhVRbTxNBFJ6ZbbeCaIioiKAmBgxovYD6YEAxiBTDJQFsxRA0+uqDJr7rkyb+Ai8PitGYIC03tV4iEYJIRETUeEFQC0FQQWICoaXd7vidlVWoTfzS0z23+c7MzjnLHQ6H4ICUkuHBCKQTyN6dnakmrUprg6mMf/XtevDoacCMESLXGWTRIMTvUGLy2kqkbYdkJSxfVTk3FgVMEGtkFVOPj1OZEMoJeL8aIpTj8YtsRowQuY6ESkUlIxQ49uUjZROT4fOQC4yJjY7CfXsoFklm8gjDA0SSGbZFpd1N+6d+XoRcgu7ninoiGpmJf45MINtVUbIB4QIm9evN3pYfkDHoN+BzOMuLM8y8fzZx8li1NX3D5iRFjV3DuQUi1iALIrJxlxnazORGT6O3jxbsLytar6hxvVj6BuQdePqkrg9JGR7UApODvS97v/GrNZdf4z3ZjRJ/IMP4G8Wia7U33acMz+xuDrgqzqBYFYqtgCgUM8GZ3sNraq7gBnkil9olPazV6VpgaHT403DH8/7gbN68o5l6zrY0K1oqWbHYVgvFelhyyyHO5IiQWqAIaRNwuHQpf9Y13vv0PzLC4+7+kLvxng+bXIC1TkRHtKC/UJkJhr9npKe1ot+qhWKpSl+Xevfd+76xSIK5OoHsSmdZMVdsblgTocBUvrvh9nujbdyepu5waKYEqs2iLnhQUVaS/j+yA7hqpthqYX0nsvombz/F/rSNu76pU9eIlMdZ1Jj7ZaUOvPToZK6KUjv6kchGg/6pPJOMYOzQXFDnaWpnunYOnpWqLdYejYxs/BbBVJkevtDQ7P1sxkiM0TNBDrTEVmjTE2MjT8xY/q6smLyczBjT7nv7qgs5PzDoDrL/FooYvb2522PgzYfR8rCta3r1ygSOd3U0ISnVtyw57TPpKSuW8N63vjBy7uOA2UUFO+Pnbmre6C1ZnpKHLcair285y0vsO3Ly2piwXkS5ceSOk56du6fVWV5ql7rmhc+6cPHSAoMJIJ55XxsuLHTTZOcKa+wzKJkgPz0yNJD1ZfDDVia109hDJsa0C99E46uDNejjv8eO/NoY1dCoVRijFrTDFoze2fbOFzMktTc9Z0OByS0YyRbkHKFccBSaZATzyAZgv8b4+JgePNjQUF/kabwzQH5d1ylm5MD30eOuK0aOC0UH4O8xY1JK9guqLwHJVyxq0wAAAABJRU5ErkJggg==";
@@ -29,8 +30,9 @@
         collectTimmiHours();
     }
 
+    await sessionHandling();
+
     if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
-        sessionHandling();
         fixLayout();
         addFillButtons();
         formatDayTitles();
@@ -41,7 +43,7 @@
         showAddItem();
         enableDotDecimalEntry();
         enableEnterKeySave();
-        addFeedbackLink();
+        addTopRightLinks();
         removeTargetHours();
         fixWbsOverviewLayout();
         await addFavouritesFeature();
@@ -88,7 +90,7 @@
     }
 
     function fixWbsOverviewLayout(){
-        if ($('#TSFormWorklist').length !== 1){
+        if (!isWbsOverviewDisplayed()){
             return;
         }
 
@@ -314,16 +316,87 @@
         || element.attr('id').indexOf('.fridhours') !== -1
     }
 
-    function sessionHandling(){
-        if (isSessionTimedOut()) {
-            $('body').empty();
-            $('body').css('background-color','white');
-            $('body').append($('<p style="margin:10px;font-family:arial;">Please <a href="' + _essLoginUrl + '" target="_blank">Login to ESS</a> and then refresh this page while the other is still open.</p>'));
-//             GM.setValue('ess_sessionUrl', '');
+    async function listenForNewSession(){
+        GM_addValueChangeListener('ess_sessionUrl', function(name, old_value, newSession, remote) {
+            if (newSession){
+                window.focus();
+                window.parent.postMessage({
+                    loggedIn : true
+                }, '*');
+                window.location.href = newSession;
+            }
+        });
+    }
+
+    async function sessionHandling(){
+        if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('redirectedfromesslogin') !== -1){
+            window.location.href = "https://sps.ilucca.ch/timmi#/submission/";
         }
-        else if (isTimeEntryDisplayed()) {
-            GM.setValue('ess_sessionUrl', window.location.href);
+
+        if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
+            if (isSessionTimedOut()) {
+                $('body').empty();
+                $('body').css('background-color','slategray');
+                $('body').css('display','flex');
+                $('body').css('margin','10px');
+                $('body').css('justify-content','center');
+                var loginBox = $('<div style="width:300px;padding:30px;font-family:arial;font-size:25px;background-color:white;text-align:center"></div>');
+                loginBox.append($('<div style="margin:10px;color:#0066a1">Timmi ESS Fusion</div>'));
+                loginBox.append('<img src="' + _saferpayLogo + '"/>');
+                $('body').append(loginBox);
+                //var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:30px;padding:10px 40px;background-color:#0066a1;display:inline-block;" target="_top" href="' + _essLoginUrl + '&redirectfromtimmi">Login</<a>');
+                var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:30px;padding:10px 40px;background-color:#0066a1;display:inline-block;" href="#">Login</<a>');
+                loginBox.append(redirectLoginBox);
+                var legacyLogin = $('<div style="font-size:20px;">or use the <a href="' + _essLoginUrl + '" target="_blank">Legacy Login</a><br> and then refresh this page</div>');
+                loginBox.append(legacyLogin);
+
+                redirectLoginBox.click(async function(){
+                    GM.setValue('ess_sessionUrl','');
+                    openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login',300, 650);
+                    await listenForNewSession();
+                });
+
+                window.parent.postMessage({
+                    loginRequired : true
+                }, '*');
+            }
+            else if (isTimeEntryDisplayed()) {
+                GM.setValue('ess_sessionUrl', window.location.href);
+
+                try{
+                    if (window.parent.location.href.indexOf('closeAfterLogin') !== -1) {
+                        top.location.href = document.location.href + '&closeAfterLogin';
+                        window.close();
+                    }
+                }catch(ex)
+                {
+                    // cannot get top location for redirect
+                }
+            }
         }
+    }
+
+    function openPopup(url, title, w, h) {
+        // Fixes dual-screen position                             Most browsers      Firefox
+        const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
+        const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
+
+        //const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+        //const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+        const width = screen.width;
+        const height = screen.height;
+
+        const systemZoom = 1;//width / window.screen.availWidth;
+        const left = (width - w - 50) / systemZoom + dualScreenLeft
+        const top = (height - h - 150) / systemZoom + dualScreenTop
+        const newWindow = window.open(url, title,`scrollbars=yes,width=${w / systemZoom},height=${h / systemZoom},top=${top},left=${left}`);
+
+        if (window.focus) newWindow.focus();
+    }
+
+    function isWbsOverviewDisplayed(){
+        return $('#WLSelectButton').length == 1;
     }
 
     function isTimeEntryDisplayed(){
@@ -340,7 +413,7 @@
         checkForUpdatesBox.append($('<a style="line-height:18px;font-size:10px;display:block;" href="' + _updateUrl +'">Check for Updates</a>'));
         $('body').append(checkForUpdatesBox);
 
-        var minMaxEssBtn = $('<button style="position:fixed;bottom:14px;right:125px;width:100px;height:20px;z-index:100;font-size:10px">Maximize<button>');
+        var minMaxEssBtn = $('<button id="maximizeBtn" style="position:fixed;bottom:14px;right:125px;width:100px;height:20px;z-index:100;font-size:10px">Maximize<button>');
         var showHideEssBtn = $('<button style="position:fixed;bottom:14px;right:20px;width:100px;height:20px;z-index:100;font-size:10px;white-space: nowrap;">Hide ESS</button>');
         showHideEssBtn.click(function(){
             essIframe.toggle();
@@ -354,21 +427,45 @@
             $(this).text($(this).text() === 'Maximize' ? 'Minimize' : 'Maximize');
             var essIframe = $('#essIframe');
             if (essIframe.attr('maximized') === 'true') {
-                essIframe.attr('maximized','false');
-                essIframe.css('top', '330px');
-                essIframe.css('left', '840px');
-                essIframe.css('width', 'calc(100% - 845px)');
-                essIframe.css('height', 'calc(100% - 335px)');
+                minimizeEssFrame();
             }
             else {
-                essIframe.attr('maximized','true');
-                essIframe.css('top', '50px');
-                essIframe.css('left', '50px');
-                essIframe.css('width', 'calc(100% - 55px)');
-                essIframe.css('height', 'calc(100% - 55px)');
+                maximizeEssFrame();
             }
         });
         $('body').append(minMaxEssBtn);
+
+        $(window).on('message', function (e) {
+            if (e.originalEvent.data.loginRequired) {
+                essIframe.css('top', 'calc(100% - 360px)');
+                essIframe.css('left', 'calc(100% - 350px)');
+                essIframe.css('width', '340px');
+                essIframe.css('height', '350px');
+            }
+            else if (e.originalEvent.data.loggedIn) {
+                minimizeEssFrame();
+            }
+        });
+    }
+
+    function minimizeEssFrame(){
+        var essIframe = $('#essIframe');
+
+        essIframe.attr('maximized','false');
+        essIframe.css('top', '330px');
+        essIframe.css('left', '840px');
+        essIframe.css('width', 'calc(100% - 845px)');
+        essIframe.css('height', 'calc(100% - 335px)');
+    }
+
+    function maximizeEssFrame(){
+        var essIframe = $('#essIframe');
+
+        essIframe.attr('maximized','true');
+        essIframe.css('top', '50px');
+        essIframe.css('left', '50px');
+        essIframe.css('width', 'calc(100% - 55px)');
+        essIframe.css('height', 'calc(100% - 55px)');
     }
 
     function collectTimmiHours(){
@@ -414,7 +511,7 @@
         return totalHours;
     }
 
-    function addFeedbackLink(){
+    function addTopRightLinks(){
         var row = $('#employee_kostl_l').closest('tr');
         row.css('white-space', 'nowrap');
 
@@ -440,7 +537,6 @@
                 || $('*:contains("Session does not exist")').length > 0
                 || $('*:contains("Session timed out")').length > 0
                 || $('*:contains("session is expired")').length > 0);
-        
     }
 
     function enableEnterKeySave(){
@@ -489,8 +585,6 @@
     }
 
     function fixLayout(){
-
-        // append nice new sap colors
         $('head').append('<link _id="urstyle" rel="stylesheet" type="text/css" href="/sap/public/bc/bsp/Design2008/themes/sap_tradeshow/ur/ur_sf3.css?7.33.3.72.0">');
 
         //fix overall size
@@ -584,7 +678,7 @@
         });
 
         // input field color
-         $('input').css('border','1px solid lightgray');
+        $('input').css('border','1px solid lightgray');
 
         // icon positioning
         $('td[valign="BOTTOM"]').attr('valign','');
@@ -839,4 +933,30 @@
             $(this).val('');
         });
     }
+
+    function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name) {
+        document.cookie = name+'=; Max-Age=-99999999;';
+    }
+
 })();
