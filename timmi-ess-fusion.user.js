@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.7
+// @version      0.6.8
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -108,14 +108,16 @@
         // remove top row with employee and week info for more clean view
         $('#TSFormWorklist').find('table').first().remove();
 
-        var topBackBtn = $('<a href="#" style="margin-bottom:20px;display:inline-block;">Back</a>');
+        var topBackBtn = $('<a href="#" style="margin-bottom:20px;display:inline-block;padding:5px;">Back</a>');
+        setButtonStyle(topBackBtn);
         topBackBtn.prependTo($('body'));
         topBackBtn.click(function(){
             $('#WLBackButton').click();
         });
 
         // add toggle view link
-        var showFilterBtn = $('<a href="#" style="position:absolute;top:20px;right:20px;">Toggle View</a>');
+        var showFilterBtn = $('<a href="#" style="position:absolute;top:20px;right:20px;padding:5px;">Toggle View</a>');
+        setButtonStyle(showFilterBtn);
         $('body').append(showFilterBtn);
         showFilterBtn.click(function(){
             $('.urTbsWhl').toggle();
@@ -140,10 +142,16 @@
         $('.urTbsWhl').hide();
 
         // fix back and select links
-        $('.urBtnPaddingEmph').css('margin', '10px');
-        $('.urBtnPaddingEmph').css('display','inline-block');
-        $('.urBtnPrevPadding').text('Back');
-        $('.urBtnPrevPadding').css('display','inline-block');
+        $('.urBtnPaddingEmph')
+            .css('margin', '10px')
+            .css('padding','5px');
+        $('.urBtnPrevPadding')
+            .css('padding','5px')
+            .text('Back');
+        setButtonStyle($('.urBtnPrevPadding'));
+        setButtonStyle($('.urBtnPaddingEmph'));
+        $('.urBtnStd1PrevStep').removeClass('urBtnStd1PrevStep');
+        $('.urBtnEmph1').removeClass('urBtnEmph1');
 
         // hide useless title
         $('#myworklist-scrl').hide();
@@ -163,7 +171,12 @@
     async function addFavouritesFeature(){
         $('#worklistIcon').css('vertical-align','middle');
 
-        $('<img style="width:20px;height:20px;vertical-align:middle;" src="' + _faviconFull + '"/>').insertBefore($('#worklistIcon'));
+        var favouriteBtn = $('<img style="width:20px;height:20px;vertical-align:middle;cursor:pointer;" src="' + _faviconFull + '"/>')
+        favouriteBtn.insertBefore($('#worklistIcon'));
+        favouriteBtn.click(function(){
+            $('#worklistIcon').click();
+        });
+
         await refreshFavourites();
     }
 
@@ -250,7 +263,7 @@
             if (savedFavouriteTitle){
                 favouritesTable.show();
                 var favRow = $('<tr></td>');
-                favRow.append($('<td><a href="#" class="addFromFavouritesBtn" wbsKey="' + $(this).text() + '">Select</a></td>'));
+                favRow.append($('<td style="vertical-align:middle"><a href="#" class="addFromFavouritesBtn" wbsKey="' + $(this).text() + '">Select</a></td>'));
                 var favicon = $('<img style="width:20px;height:20px;cursor:pointer;vertical-align:middle;" title="Delete item from favourites" wbsKey="' + $(this).text() + '" src="' + _faviconFull + '"/>');
                 favicon.click(async function(){
                     deleteFavourite($(this).attr('wbsKey'));
@@ -281,6 +294,9 @@
                     });
                     $('#WLSelectButton').click();
                 });}
+
+            setButtonStyle($('.addFromFavouritesBtn'));
+            $('.addFromFavouritesBtn').css('padding','1px 5px');
         });
     }
 
@@ -341,14 +357,13 @@
                 $('body').css('display','flex');
                 $('body').css('margin','10px');
                 $('body').css('justify-content','center');
-                var loginBox = $('<div style="width:300px;padding:30px;font-family:arial;font-size:25px;background-color:white;text-align:center"></div>');
-                loginBox.append($('<div style="margin:10px;color:#0066a1">Timmi ESS Fusion</div>'));
-                loginBox.append('<img src="' + _saferpayLogo + '"/>');
+                var loginBox = $('<div style="width:300px;padding:10px;font-family:arial;font-size:25px;background-color:white;text-align:center"></div>');
+                loginBox.append($('<div style="margin:10px;color:#0066a1;">Timmi ESS Fusion</div>'));
+                loginBox.append('<p><img src="' + _saferpayLogo + '"/></p>');
                 $('body').append(loginBox);
-                //var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:30px;padding:10px 40px;background-color:#0066a1;display:inline-block;" target="_top" href="' + _essLoginUrl + '&redirectfromtimmi">Login</<a>');
-                var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:30px;padding:10px 40px;background-color:#0066a1;display:inline-block;" href="#">Login</<a>');
+                var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:20px;padding:10px 40px;background-color:#0066a1;display:inline-block;" href="#">Login</<a>');
                 loginBox.append(redirectLoginBox);
-                var legacyLogin = $('<div style="font-size:20px;">or use the <a href="' + _essLoginUrl + '" target="_blank">Legacy Login</a><br> and then refresh this page</div>');
+                var legacyLogin = $('<div style="font-size:18px;">or use the <a href="' + _essLoginUrl + '" target="_blank">Legacy Login</a><br> and refresh this page</div>');
                 loginBox.append(legacyLogin);
 
                 redirectLoginBox.click(async function(){
@@ -407,22 +422,60 @@
     async function appendEss(){
         var url = await GM.getValue('ess_sessionUrl') || _essStartUrl;
 
-        var essIframe = $('<iframe id="essIframe" maximized="false" style="position:fixed;top:330px;left:840px;width:calc(100% - 845px);height:calc(100% - 335px);z-index:100;border:1px solid black" src="' + url + '"/>');
+        var essIframe = $('<iframe id="essIframe" maximized="false" src="' + url + '"/>');
         $('body').append(essIframe);
+        essIframe
+            .css('position','fixed')
+            .css('z-index','100')
+            .css('border','1px solid gray')
+            .css('background-color','#66A3C7')
+            .css('top','330px')
+            .css('left','840px')
+            .css('width','calc(100% - 845px)')
+            .css('height','calc(100% - 335px)');
 
-        var checkForUpdatesBox = $('<div style="position:fixed;bottom:14px;right:230px;width:100px;height:18px;z-index:100;background-color:lightblue;border:1px solid gray;text-align:center;"></div>');
-        checkForUpdatesBox.append($('<a style="line-height:18px;font-size:10px;display:block;" href="' + _updateUrl +'">Check for Updates</a>'));
+        var checkForUpdatesBox = $('<div></div>');
+        checkForUpdatesBox.append($('<a style="color:white" href="' + _updateUrl +'">Check for Updates</a>'));
+        setButtonStyle(checkForUpdatesBox);
         $('body').append(checkForUpdatesBox);
+        checkForUpdatesBox
+            .css('position','fixed')
+            .css('font-size','10px')
+            .css('line-height','18px')
+            .css('z-index','100')
+            .css('bottom','14px')
+            .css('right','167px')
+            .css('width','100px')
+            .css('height','18px');
 
-        var minMaxEssBtn = $('<button id="maximizeBtn" style="position:fixed;bottom:14px;right:125px;width:100px;height:20px;z-index:100;font-size:10px">Maximize<button>');
-        var showHideEssBtn = $('<button style="position:fixed;bottom:14px;right:20px;width:100px;height:20px;z-index:100;font-size:10px;white-space: nowrap;">Hide ESS</button>');
+        var minMaxEssBtn = $('<button>Maximize</button>');
+        $('body').append(minMaxEssBtn);
+        setButtonStyle(minMaxEssBtn);
+        minMaxEssBtn
+            .css('position','fixed')
+            .css('bottom','14px')
+            .css('right','92px')
+            .css('width','70px')
+            .css('height','20px')
+            .css('z-index','100');
+
+        var showHideEssBtn = $('<button>Hide ESS</button>');
+        $('body').append(showHideEssBtn);
+        showHideEssBtn
+            .css('position','fixed')
+            .css('bottom','14px')
+            .css('right','17px')
+            .css('width','70px')
+            .css('height','20px')
+            .css('z-index','100');
+        setButtonStyle(showHideEssBtn);
+
         showHideEssBtn.click(function(){
             essIframe.toggle();
             checkForUpdatesBox.toggle();
             minMaxEssBtn.toggle();
             $(this).text($(this).text() === 'Hide ESS' ? 'Show ESS' : 'Hide ESS');
         });
-        $('body').append(showHideEssBtn);
 
         minMaxEssBtn.click(function(){
             $(this).text($(this).text() === 'Maximize' ? 'Minimize' : 'Maximize');
@@ -434,19 +487,30 @@
                 maximizeEssFrame();
             }
         });
-        $('body').append(minMaxEssBtn);
 
         $(window).on('message', function (e) {
             if (e.originalEvent.data.loginRequired) {
-                essIframe.css('top', 'calc(100% - 360px)');
-                essIframe.css('left', 'calc(100% - 350px)');
-                essIframe.css('width', '340px');
-                essIframe.css('height', '350px');
+                essIframe.css('top', 'calc(100% - 290px)');
+                essIframe.css('left', 'calc(100% - 280px)');
+                essIframe.css('width', '270px');
+                essIframe.css('height', '280px');
             }
             else if (e.originalEvent.data.loggedIn) {
                 minimizeEssFrame();
             }
         });
+    }
+
+    function setButtonStyle(btn){
+        btn
+            .css('display','inline-block')
+            .css('text-decoration','none')
+            .css('background-color','#66A3C7')
+            .css('border','1px solid gray')
+            .css('color','white')
+            .css('font-size','10px')
+            .css('white-space','nowrap')
+            .css('text-align','center');
     }
 
     function minimizeEssFrame(){
@@ -525,11 +589,18 @@
             var wbsLink = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a href="' + _wbsLookupLink + '" target="_blank">WBS Lookup</a></td>');
             row.append(wbsLink);
         }
-        else {
-            var feedbackLink = 'mailto:dragan.ignjic@six-group.com?Subject=Timmi ESS Fusion - Feedback';
-            var feedbackLinkBox = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a href="' + feedbackLink + '" target="_blank">Feedback</a></td>');
-            row.append(feedbackLinkBox);
-        }
+
+        var voteLink = $('<a href="https://worldline.io/awards2020/projects/vote/64" target="_blank">Vote for WIN Awards (DAS Login)</a>');
+        setButtonStyle(voteLink);
+        voteLink
+            .css('padding','0 5px')
+            .css('font-size','12px')
+            .css('background-color','lightcoral');
+        var voteLinkBox = $('<td></td>');
+        voteLinkBox.css('text-align','right');
+        voteLinkBox.css('width','100%');
+        voteLinkBox.append(voteLink);
+        row.append(voteLinkBox);
     }
 
     function isSessionTimedOut(){
@@ -700,6 +771,15 @@
 
         // week total title
         $('span:contains("Week total")').text('');
+
+        // fix etc button click
+        var etcBtn = $('#etc-button');
+        etcBtn.attr('onclick', etcBtn.attr('ocl'));
+
+        // consistent button style
+        setButtonStyle($('#etc-button'));
+        setButtonStyle($('#eticketopen'));
+        setButtonStyle($('#changePeriodButton'));
     }
 
     function addWeekButtons() {
@@ -799,7 +879,9 @@
 
                     if (parseFloat(Math.abs(diff.toFixed(2))) !== 0){
                         diffCell.val(diff.toFixed(2).replace('.',','));
-                        diffCell.css('background-color', 'lightcoral');
+                        diffCell
+                            .css('background-color', 'lightcoral')
+                            .css('color','white');
 
                         if (diff < 0){
                             diffCell.attr('title', 'You have ' + Math.abs(diff).toFixed(2) + ' hours more in Timmi compared to ESS');
