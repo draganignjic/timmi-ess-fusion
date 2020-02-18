@@ -17,7 +17,7 @@
 
 (async () => {
 
-	let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
+    let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
     let _essLoginUrl = "https://www.myatos.net/irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1578481318556&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet%20entry&NavMode=10";
     let _essLegacyLoginUrl = "https://www.myatos.net/irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1580893319809&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet entry&NavMode=10";
     let _essStartUrl = "https://perf.myatos.net/sap(ZT1ZOTVDWmVPR3lsRWZ1eGVkRmxqR3JBLS1QNURkNVd0akcqVTFYTjRreU4zRkxBLS0=)/bc/bsp/sap/ZCA_TIMESHEET/ZCA_TIMESHEET_STD.do";
