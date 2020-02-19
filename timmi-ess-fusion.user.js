@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.9
+// @version      0.6.10
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -593,7 +593,7 @@
         var voteLink = $('<a href="https://worldline.io/awards2020/projects/vote/64" target="_blank">Vote for WIN Awards (DAS Login)</a>');
         setButtonStyle(voteLink);
         voteLink
-            .css('padding','5px')
+            .css('padding','5px 10px')
             .css('font-size','12px')
             .css('background-color','lightgreen')
             .css('color','black');
