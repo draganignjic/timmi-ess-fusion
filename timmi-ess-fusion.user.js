@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.8
+// @version      0.6.9
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -358,8 +358,8 @@
                 $('body').css('margin','10px');
                 $('body').css('justify-content','center');
                 var loginBox = $('<div style="width:300px;padding:10px;font-family:arial;font-size:25px;background-color:white;text-align:center"></div>');
-                loginBox.append($('<div style="margin:10px;color:#0066a1;">Timmi ESS Fusion</div>'));
-                loginBox.append('<p><img src="' + _saferpayLogo + '"/></p>');
+                loginBox.append($('<div style="_margin:10px;color:#0066a1;">Timmi ESS Fusion</div>'));
+                loginBox.append('<img style="margin:10px;" src="' + _saferpayLogo + '"/>');
                 $('body').append(loginBox);
                 var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:20px;padding:10px 40px;background-color:#0066a1;display:inline-block;" href="#">Login</<a>');
                 loginBox.append(redirectLoginBox);
@@ -593,9 +593,10 @@
         var voteLink = $('<a href="https://worldline.io/awards2020/projects/vote/64" target="_blank">Vote for WIN Awards (DAS Login)</a>');
         setButtonStyle(voteLink);
         voteLink
-            .css('padding','0 5px')
+            .css('padding','5px')
             .css('font-size','12px')
-            .css('background-color','lightcoral');
+            .css('background-color','lightgreen')
+            .css('color','black');
         var voteLinkBox = $('<td></td>');
         voteLinkBox.css('text-align','right');
         voteLinkBox.css('width','100%');
