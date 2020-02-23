@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.10
+// @version      0.6.11
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -116,13 +116,10 @@
         });
 
         // add toggle view link
-        var showFilterBtn = $('<a href="#" style="position:absolute;top:20px;right:20px;padding:5px;">Toggle View</a>');
+        var showFilterBtn = $('<buton style="margin-bottom:5px;padding:5px;">Toggle Columns</button>');
         setButtonStyle(showFilterBtn);
-        $('body').append(showFilterBtn);
+        $('.app').prepend(showFilterBtn);
         showFilterBtn.click(function(){
-            $('.urTbsWhl').toggle();
-            $('#favouritesTable').parent().toggle();
-
             for(var i = 4; i < 15; i++){
                 if (i !== 12){
                     $('#super').find('th:nth-child(' + i + ')').toggle();
@@ -131,15 +128,25 @@
             }
         });
 
-        // fix filter box
-        $('.urGrpTtlBox.urScrl').css('background-color','');
-        $('#htmlb_group_1').find('td').css('border', '1px solid gray');
         $('span:contains("Filter")').closest('tr').css('background-color', 'lightblue');
         $('span:contains("Filter")').closest('td').css('padding', '5px');
         $('#htmlb_group_1').css('width', '100px');
         $('#LayoutListBox').width($('#s_wbscust').width());
         $('.urTbsWhl').css('margin-bottom','20px');
-        $('.urTbsWhl').hide();
+        $('#super').parent().css('background-color','');
+
+        // fix filter box
+        $('.urTbsWhl').css('background-color','rgba(0, 0, 0, 0)');
+        $('.urTbsWhl').css('border','none');
+        $('.urScrl').css('border','1px solid gray');
+        $('.urGrpBdyBox.urScrl').css('border-top','0');
+        $('.urGrpTtlBox').removeClass('urGrpTtlBox');
+        $('.urTbsCnt').css('padding','0');
+        $('.urGrpBdyBoxPd').css('padding','0');
+        $('.urGrpBdyBoxPd').find('td').css('border','none');
+        $('.urGrpBdyBoxPd').find('table').css('padding','10px');
+        $('.urGrpBdyBoxPd').find('input,select').css('width','250px');
+        $('#myworklist-cnt-0').css('height','');
 
         // fix back and select links
         $('.urBtnPaddingEmph')
@@ -187,6 +194,7 @@
         }
         else{
             itemTitleCell = $('img[title*="Delete"]').closest('tr').find('td[align="left"]:last');
+            //             titleTextClass = 'urTxtStd';
         }
         itemTitleCell.css('white-space', 'nowrap');
         itemTitleCell.css('vertical-align', 'middle');
@@ -205,7 +213,9 @@
                 favicon.attr('src', _faviconFull);
                 favicon.attr('title', 'Remove from favourites');
                 wbsTitle.hide();
-                $(this).append($('<span class="urTxtStd favouriteTitle" style="white-space:nowrap;" title="' + wbsTitle.attr('title') + ' - ' + wbsTitle.text() + '" originalValue="' + wbsTitle.text() + '">' + savedFavouriteTitle + '</span>'));
+                var newTitle = $('<span class="favouriteTitle" style="white-space:nowrap;" title="' + wbsTitle.attr('title') + ' - ' + wbsTitle.text() + '" originalValue="' + wbsTitle.text() + '">' + savedFavouriteTitle + '</span>');
+                newTitle.css('font-size', wbsTitle.css('font-size'));
+                $(this).append(newTitle);
             }
             else {
                 wbsTitle.show();
@@ -331,6 +341,8 @@
         || element.attr('id').indexOf('.wedhours') !== -1
         || element.attr('id').indexOf('.thurhours') !== -1
         || element.attr('id').indexOf('.fridhours') !== -1
+        || element.attr('id').indexOf('.sathours') !== -1
+        || element.attr('id').indexOf('.sunhours') !== -1;
     }
 
     async function listenForNewSession(){
@@ -352,23 +364,40 @@
 
         if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
             if (isSessionTimedOut()) {
-                $('body').empty();
-                $('body').css('background-color','slategray');
-                $('body').css('display','flex');
-                $('body').css('margin','10px');
-                $('body').css('justify-content','center');
-                var loginBox = $('<div style="width:300px;padding:10px;font-family:arial;font-size:25px;background-color:white;text-align:center"></div>');
-                loginBox.append($('<div style="_margin:10px;color:#0066a1;">Timmi ESS Fusion</div>'));
-                loginBox.append('<img style="margin:10px;" src="' + _saferpayLogo + '"/>');
+                var body = $('body');
+                body
+                    .empty()
+                    .css('background-color','slategray')
+                    .css('display','flex')
+                    .css('margin','10px')
+                    .css('justify-content','center');
+
+                var loginBox = $('<div></div>');
                 $('body').append(loginBox);
-                var redirectLoginBox = $('<a style="text-decoration:none;color:white;margin:20px;padding:10px 40px;background-color:#0066a1;display:inline-block;" href="#">Login</<a>');
+                loginBox
+                    .css('width','300px')
+                    .css('height','210px')
+                    .css('padding','10px')
+                    .css('font-family','arial')
+                    .css('font-size','25px')
+                    .css('background-color','white')
+                    .css('text-align','center');
+
+                loginBox.append($('<div style="color:#0066a1;">Timmi ESS Fusion</div>'));
+                loginBox.append('<img style="margin:10px;" src="' + _saferpayLogo + '"/>');
+                var redirectLoginBox = $('<a href="#">Login</<a>');
+                redirectLoginBox
+                    .css('text-decoration','none')
+                    .css('color','white')
+                    .css('margin','20px')
+                    .css('padding','10px 40px')
+                    .css('background-color','#0066a1')
+                    .css('display','inline-block');
                 loginBox.append(redirectLoginBox);
-                var legacyLogin = $('<div style="font-size:18px;">or use the <a href="' + _essLoginUrl + '" target="_blank">Legacy Login</a><br> and refresh this page</div>');
-                loginBox.append(legacyLogin);
 
                 redirectLoginBox.click(async function(){
                     GM.setValue('ess_sessionUrl','');
-                    openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login',300, 650);
+                    openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login',400, 750);
                     await listenForNewSession();
                 });
 
@@ -378,14 +407,17 @@
             }
             else if (isTimeEntryDisplayed()) {
                 GM.setValue('ess_sessionUrl', window.location.href);
+                window.parent.postMessage({
+                    hideAlternativeLogin: true
+                }, '*');
 
-                try{
+                try {
                     if (window.parent.location.href.indexOf('closeAfterLogin') !== -1) {
                         top.location.href = document.location.href + '&closeAfterLogin';
                         window.close();
                     }
-                }catch(ex)
-                {
+                }
+                catch(ex) {
                     // cannot get top location for redirect
                 }
             }
@@ -397,13 +429,10 @@
         const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
         const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
 
-        //const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
-        //const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
-
         const width = screen.width;
         const height = screen.height;
 
-        const systemZoom = 1;//width / window.screen.availWidth;
+        const systemZoom = 1;
         const left = (width - w - 50) / systemZoom + dualScreenLeft
         const top = (height - h - 150) / systemZoom + dualScreenTop
         const newWindow = window.open(url, title,`scrollbars=yes,width=${w / systemZoom},height=${h / systemZoom},top=${top},left=${left}`);
@@ -441,12 +470,12 @@
         checkForUpdatesBox
             .css('position','fixed')
             .css('font-size','10px')
-            .css('line-height','18px')
+            .css('line-height','8px')
             .css('z-index','100')
             .css('bottom','14px')
             .css('right','167px')
             .css('width','100px')
-            .css('height','18px');
+            .css('height','8px');
 
         var minMaxEssBtn = $('<button>Maximize</button>');
         $('body').append(minMaxEssBtn);
@@ -474,6 +503,7 @@
             essIframe.toggle();
             checkForUpdatesBox.toggle();
             minMaxEssBtn.toggle();
+            $('#legacyLogin').toggle();
             $(this).text($(this).text() === 'Hide ESS' ? 'Show ESS' : 'Hide ESS');
         });
 
@@ -488,15 +518,41 @@
             }
         });
 
+
+
+        var legacyLogin = $('<div id="legacyLogin">Alternative <a href="' + _essLoginUrl + '" target="_blank">Login</a></div>');
+        legacyLogin
+            .css('position','fixed')
+            .css('z-index','101')
+            .css('bottom','70px')
+            .css('right','0')
+            .css('width','300px')
+            .css('text-align','center')
+            .css('font-size','16px');
+        legacyLogin.click(function(){
+            GM_addValueChangeListener('ess_sessionUrl', function(name, old_value, newSession, remote) {
+                if (newSession){
+                    window.focus();
+                    window.location.reload();
+                }
+            });
+        });
+        $('body').append(legacyLogin);
+
         $(window).on('message', function (e) {
             if (e.originalEvent.data.loginRequired) {
-                essIframe.css('top', 'calc(100% - 290px)');
-                essIframe.css('left', 'calc(100% - 280px)');
-                essIframe.css('width', '270px');
-                essIframe.css('height', '280px');
+                essIframe
+                    .css('top', 'calc(100% - 290px)')
+                    .css('left', 'calc(100% - 280px)')
+                    .css('width', '270px')
+                    .css('height', '280px');
             }
             else if (e.originalEvent.data.loggedIn) {
                 minimizeEssFrame();
+                $('#legacyLogin').remove();
+            }
+            else if (e.originalEvent.data.hideAlternativeLogin) {
+                $('#legacyLogin').remove();
             }
         });
     }
@@ -510,27 +566,30 @@
             .css('color','white')
             .css('font-size','10px')
             .css('white-space','nowrap')
+            .css('border-radius','2px')
+            .css('padding','5px')
+            .css('veritcal-align','middle')
             .css('text-align','center');
     }
 
     function minimizeEssFrame(){
         var essIframe = $('#essIframe');
-
-        essIframe.attr('maximized','false');
-        essIframe.css('top', '330px');
-        essIframe.css('left', '840px');
-        essIframe.css('width', 'calc(100% - 845px)');
-        essIframe.css('height', 'calc(100% - 335px)');
+        essIframe
+            .attr('maximized','false')
+            .css('top', '330px')
+            .css('left', '840px')
+            .css('width', 'calc(100% - 845px)')
+            .css('height', 'calc(100% - 335px)');
     }
 
     function maximizeEssFrame(){
         var essIframe = $('#essIframe');
-
-        essIframe.attr('maximized','true');
-        essIframe.css('top', '50px');
-        essIframe.css('left', '50px');
-        essIframe.css('width', 'calc(100% - 55px)');
-        essIframe.css('height', 'calc(100% - 55px)');
+        essIframe
+            .attr('maximized','true')
+            .css('top', '50px')
+            .css('left', '50px')
+            .css('width', 'calc(100% - 55px)')
+            .css('height', 'calc(100% - 55px)');
     }
 
     function collectTimmiHours(){
@@ -686,9 +745,11 @@
 
         // fix week total width
         var timeCells = $('input[id*="hours"],input[id*=".weektotal"]')
-        timeCells.css('padding', '5px');
-        timeCells.css('font-size', '12px');
-        timeCells.css('width', '47px');
+        timeCells
+            .css('padding', '5px')
+            .css('font-size', '12px')
+            .css('width', '47px')
+            .css('text-align', 'right');
 
         // fix useless title row
         $('.urGrpBdyWeb1').parent().remove();
@@ -771,7 +832,15 @@
         $('#gotoNextPeriodIcon').attr('align','');
 
         // week total title
-        $('span:contains("Week total")').text('');
+        var weekTotalTitle = $('span:contains("Week total")');
+        var weekTotalCell = weekTotalTitle.parent();
+        weekTotalTitle.remove('');
+        weekTotalCell.parent().css('vertical-align','bottom');
+        var toggleWeekendBtn = $('<a style="font-family:arial;font-size:12px;" href="javascript:void(0);">Weekend</a>');
+        weekTotalCell.append(toggleWeekendBtn);
+        toggleWeekendBtn.click(function(){
+            toggleWeekend();
+        });
 
         // fix etc button click
         var etcBtn = $('#etc-button');
@@ -788,8 +857,9 @@
             var container = $('input[id="myinputfield"]').closest('td');
             container.children().hide();
             var currentWeekNumber = parseInt($('#timesheet_pperiod').val().split('.')[0].replace('0',''));
-            for (var j = Math.max(1, currentWeekNumber -8); j <= moment().isoWeek() + 1;j++){
+            for (var j = Math.max(1, currentWeekNumber - 8); j <= moment().isoWeek() + 1;j++){
                 var weekBtn = $('<button type="button" style="margin-right:10px;background-color:#66A3C7;border:1px solid gray;color:white;">Week ' + j + '</button>');
+                setButtonStyle(weekBtn);
                 if (currentWeekNumber == j){
                     weekBtn.css('background-color','white');
                     weekBtn.css('color','black');
@@ -953,6 +1023,7 @@
 
     function formatDayTitles(){
         $('#dateRow').find('.urTxtStd:contains("/")').each(function() {
+            $(this).css('padding-right','20px');
             var newText = $(this).text().replace('/','.')
             .replace('MO','Monday<br>')
             .replace('TU','Tuesday<br>')
@@ -963,6 +1034,18 @@
             .replace('SU','Sunday<br>');
 
             newText += '.' + new Date().getFullYear();
+            if (newText.indexOf(moment().format('DD.MM.YYYY')) != -1){
+                $(this).css('font-weight','bold');
+                newText = newText
+                    .replace('Monday','Today')
+                    .replace('Tuesday','Today')
+                    .replace('Wednesday','Today')
+                    .replace('Thursday','Today')
+                    .replace('Friday','Today')
+                    .replace('Saturday','Today')
+                    .replace('Sunday','Today')
+
+            }
             $(this).html(newText);
             $(this).css('margin-bottom','10px');
             $(this).css('display','inline-block');
@@ -970,8 +1053,15 @@
         });
     }
 
+    var _showWeekend = false;
+
+    function toggleWeekend(){
+        _showWeekend = !_showWeekend;
+        hideWeekend();
+    }
+
     function hideWeekend(){
-        var visible = $('body').width() > 1100;
+        var visible = _showWeekend || false;
 
         var elements = [
             $('input[id*=".sathours"]').closest('td'),
@@ -1017,30 +1107,4 @@
             $(this).val('');
         });
     }
-
-    function setCookie(name,value,days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days*24*60*60*1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-    }
-
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-        }
-        return null;
-    }
-
-    function eraseCookie(name) {
-        document.cookie = name+'=; Max-Age=-99999999;';
-    }
-
 })();
