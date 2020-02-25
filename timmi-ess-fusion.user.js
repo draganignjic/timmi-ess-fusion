@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.12
+// @version      0.6.13
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -856,7 +856,7 @@
         if ($('#timesheet_pperiod').length === 1){
             var container = $('input[id="myinputfield"]').closest('td');
             container.children().hide();
-            var currentWeekNumber = parseInt($('#timesheet_pperiod').val().split('.')[0].replace('0',''));
+            var currentWeekNumber = parseInt($('#timesheet_pperiod').val().split('.')[0]);
             for (var j = Math.max(1, currentWeekNumber - 8); j <= moment().isoWeek() + 1;j++){
                 var weekBtn = $('<button type="button" style="margin-right:10px;background-color:#66A3C7;border:1px solid gray;color:white;">Week ' + j + '</button>');
                 setButtonStyle(weekBtn);
@@ -869,7 +869,7 @@
                     weekBtn.text('current');
                 }
                 weekBtn.attr('title', isoWeek.startOf('isoWeek').format('DD.MM.YYYY') + ' - ' + isoWeek.endOf('isoWeek').format('DD.MM.YYYY'));
-                weekBtn.attr('weekNum', ('0' + j).substr(0,2) + '.' + (new Date).getFullYear());
+                weekBtn.attr('weekNum', ('0' + j).substr(-2) + '.' + (new Date).getFullYear());
                 weekBtn.click(function(){
                     $('#timesheet_pperiod').val($(this).attr('weekNum'));
                     $('#changePeriodButton').click();
