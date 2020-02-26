@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.13
+// @version      0.6.14
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -358,9 +358,6 @@
     }
 
     async function sessionHandling(){
-        if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('redirectedfromesslogin') !== -1){
-            window.location.href = "https://sps.ilucca.ch/timmi#/submission/";
-        }
 
         if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
             if (isSessionTimedOut()) {
@@ -407,6 +404,10 @@
             }
             else if (isTimeEntryDisplayed()) {
                 GM.setValue('ess_sessionUrl', window.location.href);
+
+                // have to set additional properties on cookie so chrmoe does not block it in iframe
+                setCookie('SAP_SESSIONID_P01_360', getCookie('SAP_SESSIONID_P01_360') + ';SameSite=None;Secure', 14);
+
                 window.parent.postMessage({
                     hideAlternativeLogin: true
                 }, '*');
@@ -1106,5 +1107,28 @@
             $(this).attr('id', $(this).attr('id') + '_diff');
             $(this).val('');
         });
+    }
+
+    function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
+    function eraseCookie(name) {
+        document.cookie = name+'=; Max-Age=-99999999;';
     }
 })();
