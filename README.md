@@ -57,7 +57,6 @@ This is how ESS works in combination with Timmi Timesheet :scream:
   - "Check for Updates" Feature
   - Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
   - Hide the weekend
-  - Maximize ESS to see the weekend
 
 
 #### Credits
