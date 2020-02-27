@@ -406,7 +406,10 @@
                 GM.setValue('ess_sessionUrl', window.location.href);
 
                 // have to set additional properties on cookie so chrmoe does not block it in iframe
-                setCookie('SAP_SESSIONID_P01_360', getCookie('SAP_SESSIONID_P01_360') + ';SameSite=None;Secure', 14);
+                var sessionCookie = getCookie('SAP_SESSIONID_P01_360');
+                if (sessionCookie){
+                    setCookie('SAP_SESSIONID_P01_360',  sessionCookie+ ';SameSite=None;Secure', 14);
+                }
 
                 window.parent.postMessage({
                     hideAlternativeLogin: true
