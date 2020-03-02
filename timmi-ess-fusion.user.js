@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.15
+// @version      0.6.16
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -56,6 +56,14 @@
     function fixTimmiLayout(){
         setTimeout(function() {
             $('.time-entry-separator').css('margin',0);
+            $('.title').css('margin-left',0);
+            $('.details').css('padding-left',0);
+            $('day-attendance > .details').css('margin-left','-50px');
+            $('timesheet')
+                .css('margin-left','-140px')
+                .css('z-index','100');
+            $('timesheet-header').css('margin-left','50px');
+            $('#main-navigation').hide();
             fixTimmiLayout();
         },1000);
     }
@@ -202,7 +210,6 @@
         }
         else{
             itemTitleCell = $('img[title*="Delete"]').closest('tr').find('td[align="left"]:last');
-            //             titleTextClass = 'urTxtStd';
         }
         itemTitleCell.css('white-space', 'nowrap');
         itemTitleCell.css('vertical-align', 'middle');
@@ -416,7 +423,7 @@
                 // have to set additional properties on cookie so chrmoe does not block it in iframe
                 var sessionCookie = getCookie('SAP_SESSIONID_P01_360');
                 if (sessionCookie){
-                    setCookie('SAP_SESSIONID_P01_360',  sessionCookie+ ';SameSite=None;Secure', 14);
+                    setCookie('SAP_SESSIONID_P01_360',  sessionCookie+ ';SameSite=None;Secure');
                 }
 
                 window.parent.postMessage({
@@ -465,15 +472,7 @@
 
         var essIframe = $('<iframe id="essIframe" maximized="false" src="' + url + '"/>');
         $('body').append(essIframe);
-        essIframe
-            .css('position','fixed')
-            .css('z-index','100')
-            .css('border','1px solid gray')
-            .css('background-color','#66A3C7')
-            .css('top','330px')
-            .css('left','840px')
-            .css('width','calc(100% - 845px)')
-            .css('height','calc(100% - 335px)');
+        minimizeEssFrame();
 
         var checkForUpdatesBox = $('<div></div>');
         checkForUpdatesBox.append($('<a style="color:white" href="' + _updateUrl +'">Check for Updates</a>'));
@@ -588,10 +587,14 @@
         var essIframe = $('#essIframe');
         essIframe
             .attr('maximized','false')
-            .css('top', '330px')
-            .css('left', '840px')
-            .css('width', 'calc(100% - 845px)')
-            .css('height', 'calc(100% - 335px)');
+            .css('position','fixed')
+            .css('z-index','100')
+            .css('border','1px solid gray')
+            .css('background-color','#66A3C7')
+            .css('top','330px')
+            .css('left','630px')
+            .css('width','calc(100% - 635px)')
+            .css('height','calc(100% - 335px)');
     }
 
     function maximizeEssFrame(){
@@ -869,7 +872,7 @@
             var container = $('input[id="myinputfield"]').closest('td');
             container.children().hide();
             var currentWeekNumber = parseInt($('#timesheet_pperiod').val().split('.')[0]);
-            for (var j = Math.max(1, currentWeekNumber - 8); j <= moment().isoWeek() + 1;j++){
+            for (var j = Math.max(1, currentWeekNumber - 5); j <= currentWeekNumber + 1;j++){
                 var weekBtn = $('<button type="button" style="margin-right:10px;background-color:#66A3C7;border:1px solid gray;color:white;">Week ' + j + '</button>');
                 setButtonStyle(weekBtn);
                 if (currentWeekNumber == j){
@@ -888,7 +891,6 @@
                 });
                 container.append(weekBtn);
             }
-            //             $('#timesheet_pperiod').closest('td').hide();
         }
     }
 
@@ -978,7 +980,19 @@
         });
     }
 
+    function isInIframe () {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
+
     function addFillButtons(){
+        if (!isInIframe()){
+            return;
+        }
+
         $('input[id*="hours"]:not([readonly])').each(function(){
             $('<button type="button" class="fillDayBtn">Fill</button>').insertAfter($(this));
         });
@@ -1093,6 +1107,10 @@
     }
 
     async function addTimmiHours() {
+        if (!isInIframe()){
+            return;
+        }
+
         $('span:contains("Total per day")').text('Total per day ESS');
         var essHoursRow = $('span:contains("Total per day ESS")').parent().parent();
         essHoursRow.attr('id', 'ess_row');
@@ -1129,6 +1147,7 @@
         }
         document.cookie = name + "=" + (value || "")  + expires + "; path=/";
     }
+
     function getCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
