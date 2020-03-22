@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.19
+// @version      0.6.20
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -111,6 +111,15 @@
             return;
         }
 
+        // fix child row sizing
+        $('.tier1 > span').click(function(){
+            $(this).closest('tr:visible').nextAll().each(function(){
+                if ($(this).css('display') === 'block'){
+                    $(this).css('display','table-row');
+                }
+            });
+        });
+
         $('.urTbsDiv').css('height','1%'); // firefox sizing issue
         $('.urTbsDiv').css('background-color','white'); // firefox coloring
         $('td').css('vertical-align','middle');
@@ -120,6 +129,7 @@
         $('th').css('padding', '5px');
         $('td,th').css('white-space', 'nowrap');
         $('#super').find('td,th').css('border', '1px solid gray');
+        $('.folder').css('display','inline-block'); // unfold/fold button sizing issue
 
         // remove top row with employee and week info for more clean view
         $('#TSFormWorklist').find('table').first().remove();
@@ -206,7 +216,7 @@
     async function refreshFavourites(){
         var itemTitleCell = null;
         if ($('#TSFormWorklist').length == 1){
-            itemTitleCell = $('.tier1').parent().next();
+            itemTitleCell = $('.tier1,.tier2').parent().next();
         }
         else{
             itemTitleCell = $('img[title*="Delete"]').closest('tr').find('td[align="left"]:last');
@@ -283,9 +293,12 @@
         favouritesTable.hide();
         $('.urTbsDiv').css('margin-bottom','20px');
 
+        var favFounds = {};
         $('.urVt1').each(async function() {
-            var savedFavouriteTitle = await getFavourite($(this).text());
-            if (savedFavouriteTitle){
+            var txt = $(this).text();
+            var savedFavouriteTitle = await getFavourite(txt);
+            if (savedFavouriteTitle && ! favFounds.hasOwnProperty(txt)) {
+                favFounds[txt] = true;
                 favouritesTable.show();
                 var favRow = $('<tr></td>');
                 favRow.append($('<td style="vertical-align:middle"><a href="#" class="addFromFavouritesBtn" wbsKey="' + $(this).text() + '">Select</a></td>'));
@@ -318,7 +331,8 @@
 
                     });
                     $('#WLSelectButton').click();
-                });}
+                });
+            }
 
             setButtonStyle($('.addFromFavouritesBtn'));
             $('.addFromFavouritesBtn').css('padding','1px 5px');
