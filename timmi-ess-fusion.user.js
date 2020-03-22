@@ -163,7 +163,15 @@
             return;
         }
 
-        addJS_Node (toggleRows);
+        // fix child row sizing
+        $('.tier1 > span').click(function(){
+            $(this).closest('tr:visible').nextAll().each(function(){
+                var id = $(this).attr('id')+'';
+                if ($(this).css('display') === 'block'){
+                    $(this).css('display','table-row');
+                }
+            });
+        });
 
         $('.urTbsDiv').css('height','1%'); // firefox sizing issue
         $('.urTbsDiv').css('background-color','white'); // firefox coloring
