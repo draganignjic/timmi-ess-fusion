@@ -106,58 +106,6 @@
         $('input[id="timesheet_tsdurationdata[2].' + idSuffix + '"]').val(totalEssDayHours.toFixed(2).replace('.',','));
     }
 
-
-    // copy/pasted from https://www.myatos.net/irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1584813492579&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F2cdfd81429dcd018714ec26adff50475&TarTitle=Timesheet%20entry&NavMode=10
-    // + fixed display "block" to "table-row"
-    function toggleRows(elm) {
-        var rows = document.getElementsByTagName("TR");
-        elm.style.backgroundImage = "url(S_RAPOSI.gif)";
-        var newDisplay = "none";
-        var thisID = elm.parentNode.parentNode.parentNode.id + "-";
-        thisID = thisID.replace(/\s+/g,'');//remove any whitespace
-        // Are we expanding or contracting? If the first child is hidden, we expand
-        for (var i = 0; i < rows.length; i++) {
-            var r = rows[i];
-            if (matchStart(r.id, thisID, true)) {
-                if (r.style.display == "none") {
-                    newDisplay = "table-row";
-                    elm.style.backgroundImage = "url(S_RAMINU.gif)";
-                }
-                break;
-            }
-        }
-
-        // When expanding, only expand one level.  Collapse all desendants.
-        var matchDirectChildrenOnly = (newDisplay != "none");
-
-        for (var j = 0; j < rows.length; j++) {
-            var s = rows[j];
-            if (matchStart(s.id, thisID, matchDirectChildrenOnly)) {
-                s.style.display = newDisplay;
-                var cell = s.getElementsByTagName("TD")[0];
-                var tier = cell.getElementsByTagName("DIV")[0];
-                var folder = tier.getElementsByTagName("SPAN")[0];
-                if (folder.getAttribute("onclick") != null) {
-                    var f = folder.getAttribute("onclick").toFunction();
-                    var KP = f.toString();
-                    if (KP.search("toggleRows") != -1){
-                        folder.style.backgroundImage = "url(S_RAPOSI.gif)";}
-                }
-            }
-        }
-    }
-
-    // from https://stackoverflow.com/questions/21271997/how-to-overwrite-a-function-using-a-userscript
-    // there's certainly a cleaner way to do this ...
-    function addJS_Node (text, s_URL, funcToRun, runOnLoad) {
-        var D = document;
-        var scriptNode = D.createElement ('script');
-        scriptNode.type = "text/javascript";
-        scriptNode.textContent = text;
-        var targ = D.getElementsByTagName ('head')[0] || D.body || D.documentElement;
-        targ.appendChild (scriptNode);
-    }
-
     function fixWbsOverviewLayout(){
         if (!isWbsOverviewDisplayed()){
             return;
@@ -166,7 +114,6 @@
         // fix child row sizing
         $('.tier1 > span').click(function(){
             $(this).closest('tr:visible').nextAll().each(function(){
-                var id = $(this).attr('id')+'';
                 if ($(this).css('display') === 'block'){
                     $(this).css('display','table-row');
                 }
