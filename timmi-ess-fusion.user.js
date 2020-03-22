@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.20
+// @version      0.6.21
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -388,7 +388,7 @@
 
     async function sessionHandling(){
         if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
-            $('body').append($('<div><img src="https://qa.saferpay.com/userscripts/timmi-ess-fusion-saferpay-logo.png?cachebusting=' + moment(new Date()).format("YYYY-MM-DD") + '"/><img src="https://github.com/draganignjic/timmi-ess-fusion/blob/master/images/saferpay-logo.png"/></div>').hide());
+            $('body').append($('<div><img src="https://qa.saferpay.com/userscripts/timmi-ess-fusion-saferpay-logo.png?cachebusting=' + moment(new Date()).format("YYYY-MM-DD") + '"/></div>').hide());
 
             if (isSessionTimedOut()) {
                 var body = $('body');
