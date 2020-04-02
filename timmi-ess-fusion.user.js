@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.22
+// @version      0.6.23
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -238,8 +238,10 @@
                 favicon.attr('src', _faviconFull);
                 favicon.attr('title', 'Remove from favourites');
                 wbsTitle.hide();
-                var newTitle = $('<span class="favouriteTitle" style="white-space:nowrap;" title="' + wbsTitle.attr('title') + ' - ' + wbsTitle.text() + '" originalValue="' + wbsTitle.text() + '">' + savedFavouriteTitle + '</span>');
-                newTitle.css('font-size', wbsTitle.css('font-size'));
+                var newTitle = $('<span class="favouriteTitle urTxtStd" style="white-space:nowrap;" title="' + wbsTitle.attr('title') + ' - ' + wbsTitle.text() + '" originalValue="' + wbsTitle.text() + '">' + savedFavouriteTitle + '</span>');
+                if (isWbsOverviewDisplayed()){
+                    newTitle.css('font-size', '16px');
+                }
                 $(this).append(newTitle);
             }
             else {
