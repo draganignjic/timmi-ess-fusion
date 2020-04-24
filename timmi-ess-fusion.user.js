@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.26
+// @version      0.6.27
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -55,19 +55,24 @@
     }
 
     function fixTimmiLayout(){
+        if ( isBigScreen()){
+            return;
+        }
+
         setTimeout(function() {
             $('.time-entry-separator').css('margin','5px');
+            $('.leave').css('margin-left','44px');
+
             $('.title').css('margin-left',0);
+            $('timesheet')
+                .css('margin-left','-140px')
+                .css('z-index','100');
+            $('timesheet-header').css('margin-left','50px');
+            $('#main-navigation').hide();
             $('.recap').css('width','150px');
             $('.details').css('padding-left',0);
             $('day-attendance').css('margin-left','-10px');
             $('day-attendance > .details').css('margin-left','-60px');
-            $('timesheet')
-                .css('margin-left','-140px')
-                .css('z-index','100');
-            $('.leave').css('margin-left','44px');
-            $('timesheet-header').css('margin-left','50px');
-            $('#main-navigation').hide();
             fixTimmiLayout();
         },1000);
     }
@@ -603,6 +608,10 @@
             .css('text-align','center');
     }
 
+    function isBigScreen(){
+        return $(window).width() > 3000;
+    }
+
     function minimizeEssFrame(){
         var essIframe = $('#essIframe');
         essIframe
@@ -610,11 +619,22 @@
             .css('position','fixed')
             .css('z-index','100')
             .css('border','1px solid gray')
-            .css('background-color','#66A3C7')
-            .css('top','330px')
-            .css('left','635px')
-            .css('width','calc(100% - 640px)')
-            .css('height','calc(100% - 335px)');
+            .css('background-color','#66A3C7');
+
+        if (isBigScreen()){
+            essIframe
+                .css('top','300px')
+                .css('left','calc(50% - 5px)')
+                .css('width','50%')
+                .css('height','calc(100% - 305px)');
+        }
+        else {
+            essIframe
+                .css('top','300px')
+                .css('left','635px')
+                .css('width','calc(100% - 640px)')
+                .css('height','calc(100% - 305px)');
+        }
     }
 
     function maximizeEssFrame(){
