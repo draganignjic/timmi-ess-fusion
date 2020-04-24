@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.25
+// @version      0.6.26
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -56,13 +56,16 @@
 
     function fixTimmiLayout(){
         setTimeout(function() {
-            $('.time-entry-separator').css('margin',0);
+            $('.time-entry-separator').css('margin','5px');
             $('.title').css('margin-left',0);
+            $('.recap').css('width','150px');
             $('.details').css('padding-left',0);
-            $('day-attendance > .details').css('margin-left','-50px');
+            $('day-attendance').css('margin-left','-10px');
+            $('day-attendance > .details').css('margin-left','-60px');
             $('timesheet')
                 .css('margin-left','-140px')
                 .css('z-index','100');
+            $('.leave').css('margin-left','44px');
             $('timesheet-header').css('margin-left','50px');
             $('#main-navigation').hide();
             fixTimmiLayout();
@@ -548,8 +551,6 @@
             }
         });
 
-
-
         var legacyLogin = $('<div id="legacyLogin">Alternative <a href="' + _essLoginUrl + '" target="_blank">Login</a></div>');
         legacyLogin
             .css('position','fixed')
@@ -611,8 +612,8 @@
             .css('border','1px solid gray')
             .css('background-color','#66A3C7')
             .css('top','330px')
-            .css('left','630px')
-            .css('width','calc(100% - 635px)')
+            .css('left','635px')
+            .css('width','calc(100% - 640px)')
             .css('height','calc(100% - 335px)');
     }
 
