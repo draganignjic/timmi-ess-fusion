@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.27
+// @version      0.7.0
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -30,12 +30,13 @@
     if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('/login') == -1){
         await appendEss();
         collectTimmiHours();
-        fixTimmiLayout();
+        await initTimmiFeatures();
     }
 
     await sessionHandling();
 
     if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
+        listenForWeekChange();
         fixLayout();
         addFillButtons();
         formatDayTitles();
@@ -54,27 +55,270 @@
         addWeekButtons();
     }
 
-    function fixTimmiLayout(){
-        if ( isBigScreen()){
+    function listenForWeekChange(){
+        $(window).on('message', function (e) {
+            var week = e.originalEvent.data.week;
+            if (!week){
+                return;
+            }
+            var weekBox = $('#timesheet_pperiod');
+
+            var differentWeekSelected = weekBox.val() != week;
+            if (weekBox.length == 1 && differentWeekSelected){
+                if ($('#weekWarning').length == 0){
+                    var warning = $('<span id="weekWarning">You selected a different week in Timmi</span>');
+                    warning
+                        .css('background-color','khaki')
+                        .css('padding','5px')
+                        .css('font-size','12px');
+                    weekBox.closest('td').prepend(warning);
+                }
+
+                $('#weekWarning').toggle(differentWeekSelected);
+
+                if (differentWeekSelected && e.originalEvent.data.changeWeek){
+                    weekBox.val(week);
+                    $('#changePeriodButton').click();
+                }
+            }
+        });
+    }
+
+    async function initTimmiFeatures(){
+        setTimeout(async function() {
+            await initTimmiFeatures();
+        },500);
+
+        compressTimmiLayout();
+        initTimmiWeekHeaders();
+        sendSelectedWeekToEss(false);
+
+        if ($('timesheet-details').length != 0
+            && $('#essIframe').length == 0) {
+            await appendEss();
+        }
+
+        if ($('#fusionHeader').length == 0){
+            var fusionHeader = $('<div id="fusionHeader"><div>');
+            fusionHeader
+                .css('height','100%')
+                .css('display','flex')
+                .css('align-items','center');
+            $('application-drawer').prepend(fusionHeader);
+
+            var detailsBtn = $('<span>Hier klicken um alle Details anzuzeigen (inkl. Monatsabschluss)</span>');
+            fusionHeader.append(detailsBtn);
+            detailsBtn
+                .css('cursor', 'pointer')
+                .css('color', 'blue')
+                .css('text-decoration', 'underline')
+                .css('margin','20px');
+            detailsBtn.click(function(){
+                if ($('#fusionHeader').attr('compactView') != 'false'){
+                    $('#fusionHeader').attr('compactView','false');
+                    $('header').show();
+                    $('timesheet-header').show();
+                    $('week-attendance').show();
+                    $('week-header').show();
+                    $('#weekHeaderBox').hide();
+                }
+                else{
+                    $('#fusionHeader').attr('compactView','true');
+                    $('header').hide();
+                    $('timesheet-header').hide();
+                    $('week-attendance').hide();
+                    $('week-header').hide();
+                    $('#weekHeaderBox').show();
+                    $('#weekHeaderBox').find('week-header').show();
+                    $('.fusion-script-active-week').show();
+                }
+            });
+        }
+    }
+
+    function compressTimmiLayout(){
+        $('.recap').css('min-height',0);
+        $('.details').css('padding','5px');
+        $('.day-attendance').css('min-height',0);
+        $('day-attendance').css('min-height','4.5em');
+        $('week-attendance').last().css('margin-bottom','16px');
+        $('timesheet').css('margin-bottom',0);
+        $('.recap').css('margin-right','5px');
+        $('body').css('overflow-y','scroll');
+        $('.title').css('line-height','0.5em');
+
+        $('week-header').each(function(){
+            if ($(this).parent().is('#weekHeaderBox')){
+
+                var weekText = $(this).find('.week-number').text();
+                var clonePie = $('week-attendance').filter(function() { return $(this).find('.week-number').text() == weekText; }).find('week-header').find('completion-pie').clone();
+
+                var existingPie = $(this).find('completion-pie');
+                if (clonePie.html() != existingPie.html()){
+                    existingPie.replaceWith(clonePie);
+                    clonePie.css('display','inline');
+                    clonePie.parent().css('width','3em');
+                }
+            }
+        });
+    }
+
+    function selectCurrentWeekInEssOnNextLoad() {
+        var essIframe = $('#essIframe');
+        if (essIframe.length == 0){
+            setTimeout(selectCurrentWeekInEssOnNextLoad, 500);
             return;
         }
 
-        setTimeout(function() {
-            $('.time-entry-separator').css('margin','5px');
-            $('.leave').css('margin-left','44px');
+        essIframe[0].onload = function() {
+            sendSelectedWeekToEss(true);
+            //             window.scrollBy(0, 250);
+            essIframe[0].onload = null;
+        };
+    }
 
-            $('.title').css('margin-left',0);
-            $('timesheet')
-                .css('margin-left','-140px')
-                .css('z-index','100');
-            $('timesheet-header').css('margin-left','50px');
-            $('#main-navigation').hide();
-            $('.recap').css('width','150px');
-            $('.details').css('padding-left',0);
-            $('day-attendance').css('margin-left','-10px');
-            $('day-attendance > .details').css('margin-left','-60px');
-            fixTimmiLayout();
-        },1000);
+
+    function initTimmiWeekHeaders(){
+        if ($('week-header').length == 0){
+            return;
+        }
+
+        if ($('week-header').attr('initialized')){
+            return;
+        }
+        else {
+            $('week-header').attr('initialized','true')
+        }
+
+        $('week-attendance').each(function(){
+            if ($(this).find('week-header').hasClass('overview')){
+                $(this).hide();
+            }
+        });
+
+        $('header').hide();
+        $('timesheet-header').hide();
+
+        var headerBox = $('<div id="weekHeaderBox"></div>');
+        headerBox
+            .css('float','left')
+            .css('margin-top', '50px')
+            .css('padding-left', '40px')
+            .css('width','100%')
+            .css('height','auto');
+        headerBox.prependTo($('timesheet-details'));
+
+        var lastMonthBtn = $('.west.arrow.icon.button').clone();
+        lastMonthBtn
+            .css('float','left')
+            .css('margin','5px')
+            .css('padding-top', '33px')
+            .css('padding-bottom', '33px')
+        headerBox.append(lastMonthBtn);
+
+        var originalHeaders = $('week-header');
+        var weekHeaderTop = originalHeaders.clone();
+        weekHeaderTop.find('.comment.icon').remove();
+        weekHeaderTop.find('.bookmark.error').remove();
+        weekHeaderTop.find('.controllog.label').remove();
+        weekHeaderTop.css('padding','0 10px');
+        weekHeaderTop.css('margin','5px');
+        weekHeaderTop.css('box-sizing','border-box');
+        headerBox.append(weekHeaderTop);
+        weekHeaderTop.css('border-bottom',weekHeaderTop.css('border-top'));
+        weekHeaderTop.css('float','left');
+        weekHeaderTop.css('background-color','white');
+        weekHeaderTop.css('cursor','pointer');
+        weekHeaderTop.each(function(){
+            var weekNr = $(this).find('.week-number').text().match(/\d+/)[0];
+            if (weekNr == moment().isoWeek()){
+                $(this)
+                    .css('border-bottom','3px solid rgb(160,223,201)')
+                    .css('border-right','3px solid rgb(160,223,201)');
+//                 .css('background-color','rgb(160,223,201)');
+//                 $(this).addClass('fusion-script-active-week');
+                selectCurrentWeekInEssOnNextLoad();
+                $(this).find('.week-number')
+                    .css('background-color','lightgray')
+                    .css('color','white');
+            }
+        });
+
+        var nextMonthBtn = $('.east.arrow.icon.button').clone();
+        nextMonthBtn
+            .css('float','left')
+            .css('margin','5px')
+            .css('padding-top', '33px')
+            .css('padding-bottom', '33px');
+        headerBox.append(nextMonthBtn);
+
+        weekHeaderTop.click(function(){
+//             $('.fusion-script-active-week').removeClass('fusion-script-active-week');
+//             $(this).addClass('fusion-script-active-week');
+            weekHeaderTop.css('border','1px solid rgb(160,223,201)');
+            $(this)
+                .css('border-bottom','3px solid rgb(160,223,201)')
+                .css('border-right','3px solid rgb(160,223,201)');
+
+            var clickedWeekText = $(this).find('.week-number').text();
+            $('week-attendance').each(function(){
+                if ($(this).find('.week-number').text() != clickedWeekText){
+                    $(this).hide();
+                }
+                else{
+//                     $(this).addClass('fusion-script-active-week');
+                    $(this).show();
+                    $('week-attendance').find('week-header').hide();
+                    selectWeekInEss($(this).find('.week-number').text().match(/\d+/)[0]);
+                    if ($(this).find('week-header').hasClass('overview')){
+                        $(this).find('week-header').click();
+                    }
+                }
+            });
+        });
+
+        $('week-attendance').find('week-header').hide();
+        headerBox.append($('<div style="clear:both;"></div>'));
+        $('<div style="clear:both;"></div>').insertAfter(headerBox);
+
+    }
+
+    function sendSelectedWeekToEss(changeWeek){
+        if ($('week-attendance:visible').length > 1){
+            return;
+        }
+
+        var currWeek = $('week-attendance:visible').find('.week-number');
+        if (currWeek.length == 0){
+            return;
+        }
+        var weekNr = currWeek.text().match(/\d+/)[0];
+        var data = {week: ('0' + weekNr).substr(-2) + '.' + getTimmiYear()};
+        if (changeWeek){
+            data.changeWeek = true;
+        }
+        sendToEssFrame(data);
+    }
+
+    function selectWeekInEss(weekNumber){
+        var data = {week: ('0' + weekNumber).substr(-2) + '.' + getTimmiYear(), changeWeek: true};
+        sendToEssFrame(data);
+    }
+
+    function getTimmiSelectedWeek(){
+        return getLastDayOfSelectedWeek().closest('week-attendance').find('.week-number').text().match(/\d+/)[0];
+    }
+
+    function getFirstDayOfSelectedWeek(){
+        return $('day-attendance.selected').parent().children('day-attendance').first();
+    }
+
+    function getLastDayOfSelectedWeek(){
+        return $('day-attendance.selected').parent().children('day-attendance').last();
+    }
+
+    function getSelectedWeekHeader(){
+        return $('day-attendance.selected').closest('week-attendance');
     }
 
     function calculateDiffsOnChange(){
@@ -98,7 +342,6 @@
     }
 
     function calculateDiffForDay(element) {
-
         var id = element.attr('id');
         var blurEvent = $('script[for="' + id + '"][event="onblur"]');
         if (blurEvent.length === 1){
@@ -119,6 +362,8 @@
         if (!isWbsOverviewDisplayed()){
             return;
         }
+
+        $('body').css('background-color','#EAF1F6');
 
         // fix child row sizing
         $('.tier1 > span').click(function(){
@@ -199,7 +444,7 @@
         $('#myworklist-scrl').hide();
 
         // hide empty and unused cells
-        $('#super').find('tr').first().remove();
+        $('#super').find('tr').first().hide();
         for(var i = 4; i < 15; i++){
             if (i !== 12){
                 $('#super').find('th:nth-child(' + i + ')').hide();
@@ -364,7 +609,7 @@
     }
 
     function removeTargetHours() {
-        // because ESS has just as fixed 8.4 Target hour which is wrong for parttime employees
+        // remove target hours field because ESS has just as fixed 8.4 Target hour which is wrong for part time employees
         // do not remove() but hide() because remove breaks save logic
         $('input[id="timesheet_tsdurationdata[1].mondhours"]').closest('tr').hide();
     }
@@ -403,46 +648,7 @@
             $('body').append($('<div><img src="https://qa.saferpay.com/userscripts/timmi-ess-fusion-saferpay-logo.png?cachebusting=' + moment(new Date()).format("YYYY-MM-DD") + '"/></div>').hide());
 
             if (isSessionTimedOut()) {
-                var body = $('body');
-                body
-                    .empty()
-                    .css('background-color','slategray')
-                    .css('display','flex')
-                    .css('margin','10px')
-                    .css('justify-content','center');
-
-                var loginBox = $('<div></div>');
-                $('body').append(loginBox);
-                loginBox
-                    .css('width','300px')
-                    .css('height','210px')
-                    .css('padding','10px')
-                    .css('font-family','arial')
-                    .css('font-size','25px')
-                    .css('background-color','white')
-                    .css('text-align','center');
-
-                loginBox.append($('<div style="color:#0066a1;">Timmi ESS Fusion</div>'));
-                loginBox.append('<img style="margin:10px;" src="' + _saferpayLogo + '"/>');
-                var redirectLoginBox = $('<a href="#">Login</<a>');
-                redirectLoginBox
-                    .css('text-decoration','none')
-                    .css('color','white')
-                    .css('margin','20px')
-                    .css('padding','10px 40px')
-                    .css('background-color','#0066a1')
-                    .css('display','inline-block');
-                loginBox.append(redirectLoginBox);
-
-                redirectLoginBox.click(async function(){
-                    GM.setValue('ess_sessionUrl','');
-                    openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login',400, 750);
-                    await listenForNewSession();
-                });
-
-                window.parent.postMessage({
-                    loginRequired : true
-                }, '*');
+                displayLoginScreen();
             }
             else if (isTimeEntryDisplayed()) {
                 GM.setValue('ess_sessionUrl', window.location.href);
@@ -450,7 +656,7 @@
                 // have to set additional properties on cookie so chrmoe does not block it in iframe
                 var sessionCookie = getCookie('SAP_SESSIONID_P01_360');
                 if (sessionCookie){
-                    setCookie('SAP_SESSIONID_P01_360',  sessionCookie+ ';SameSite=None;Secure');
+                    setCookie('SAP_SESSIONID_P01_360',  sessionCookie + ';SameSite=None;Secure');
                 }
 
                 window.parent.postMessage({
@@ -468,6 +674,78 @@
                 }
             }
         }
+    }
+
+    function displayLoginScreen(){
+        var body = $('body');
+        body.empty();
+
+        var mainTbl = $('<table style="width:900px;border-spacing:0 2px;"></table>');
+        mainTbl.css('background-color','#EAF1F6');
+        body.append(mainTbl);
+
+        var topRow = $('<tr></tr>');
+        topRow
+            .css('background-color','lightblue');
+        mainTbl.append(topRow);
+        topRow.append($('<td><img src="' + _saferpayLogo + '" /><span style="margin:20px;line-height:30px;">Employee Cost Center: <b>CH08804041 DI GBD Omnichannel</b></span></td>'));
+
+        var weekRow = $('<tr></tr>');
+        weekRow
+            .css('margin','5px');
+        mainTbl.append(weekRow);
+        var weekCell = $('<td colspan="2"></td>');
+        weekCell.css('background-color','lightblue');
+        weekRow.append(weekCell);
+        addWeekButtonsToContainer(weekCell, moment().isoWeek());
+
+        var loginCell = $('<td></td>');
+        loginCell.css('text-align','right');
+        topRow.append(loginCell);
+        loginCell.append(createFeedbackHelpLink());
+
+        mainTbl.append($('<tr><td colspan="2" style="height:100px;text-align:center;font-size:20px;"><a id="loginLink" href="#">ESS LOGIN</a></td></tr>'));
+
+        $('#loginLink')
+            .css('text-decoration','none')
+            .css('color','white')
+            .css('margin','20px')
+            .css('padding','10px 40px')
+            .css('background-color','#0066a1')
+            .css('display','inline-block')
+            .css('border-radius','3px');
+
+        $('#loginLink').click(async function(){
+            GM.setValue('ess_sessionUrl','');
+            openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login',400, 750);
+            await listenForNewSession();
+        });
+
+        var bottomRow = $('<tr></tr>');
+        mainTbl.append(bottomRow);
+
+        var iconCell = $('<td style="background-color:lightblue"></td>');
+        iconCell.append($('<img src="/sap/public/bsp/sap/public/bc/icons/s_b_refr.gif" />'));
+        iconCell.append($('<img src="' + _faviconFull + '" />'));
+        iconCell.append($('<img src="/sap/public/bsp/sap/public/bc/icons/s_b_insr.gif" />'));
+        iconCell.append($('<img src="/sap/public/bsp/sap/public/bc/icons/s_b_detl.gif" />'));
+        iconCell.append($('<img src="/sap/public/bsp/sap/public/bc/icons/s_b_copy.gif" />'));
+        iconCell.append($('<img src="/sap/public/bsp/sap/public/bc/icons/s_f_save.gif" />'));
+        iconCell.append($('<img src="/sap(ZT01c1FyekVhNDRCel9ReVhGZDdIeDNnLS1JMUdxdmVEUGZsdTdYSG1aWklPM1hRLS0=)/bc/bsp/sap/ZCA_TIMESHEET/s_s_loop_W.gif" />'));
+
+        bottomRow.append(iconCell);
+        bottomRow.append($('<td style="background-color:lightblue;text-align:right;">You are using <a hreF="https://github.com/draganignjic/timmi-ess-fusion" target="_blank">Timmi ESS Fusion</a></td></tr>'));
+
+        bottomRow.find('img')
+            .css('filter', 'gray')
+            .css('filter', 'grayscale(100%)')
+            .css('margin-right','25px');
+
+        mainTbl.find('td')
+            .css('padding','5px')
+            .css('font-size','12px')
+            .css('padding-right','10px')
+            .css('font-family','arial');
     }
 
     function openPopup(url, title, w, h) {
@@ -495,10 +773,17 @@
     }
 
     async function appendEss(){
-        var url = await GM.getValue('ess_sessionUrl') || _essStartUrl;
+        if ($('timesheet-details').length == 0 || $('#essIframe').length != 0){
+            return;
+        }
 
+        var url = await GM.getValue('ess_sessionUrl') || _essStartUrl;
         var essIframe = $('<iframe id="essIframe" maximized="false" src="' + url + '"/>');
-        $('body').append(essIframe);
+        $('timesheet-details').append(essIframe);
+        essIframe
+            .css('border', '1px solid lightgray')
+            .css('padding', '10px')
+            .css('z-index',100)
         minimizeEssFrame();
 
         var checkForUpdatesBox = $('<div></div>');
@@ -556,15 +841,15 @@
             }
         });
 
-        var legacyLogin = $('<div id="legacyLogin">Alternative <a href="' + _essLoginUrl + '" target="_blank">Login</a></div>');
+        var legacyLogin = $('<div id="legacyLogin">Alternative ESS <a href="' + _essLoginUrl + '" target="_blank">Login</a></div>');
         legacyLogin
             .css('position','fixed')
             .css('z-index','101')
-            .css('bottom','70px')
-            .css('right','0')
-            .css('width','300px')
-            .css('text-align','center')
-            .css('font-size','16px');
+            .css('bottom','15px')
+            .css('right','300px')
+            .css('width','150px')
+            .css('text-align','right')
+            .css('font-size','12px');
         legacyLogin.click(function(){
             GM_addValueChangeListener('ess_sessionUrl', function(name, old_value, newSession, remote) {
                 if (newSession){
@@ -576,15 +861,8 @@
         $('body').append(legacyLogin);
 
         $(window).on('message', function (e) {
-            if (e.originalEvent.data.loginRequired) {
-                essIframe
-                    .css('top', 'calc(100% - 290px)')
-                    .css('left', 'calc(100% - 280px)')
-                    .css('width', '270px')
-                    .css('height', '280px');
-            }
-            else if (e.originalEvent.data.loggedIn) {
-                minimizeEssFrame();
+            if (e.originalEvent.data.loggedIn) {
+                selectCurrentWeekInEssOnNextLoad();
                 $('#legacyLogin').remove();
             }
             else if (e.originalEvent.data.hideAlternativeLogin) {
@@ -605,68 +883,68 @@
             .css('border-radius','2px')
             .css('padding','5px')
             .css('veritcal-align','middle')
-            .css('text-align','center');
-    }
-
-    function isBigScreen(){
-        return $(window).width() > 3000;
+            .css('text-align','center')
+            .css('cursor','pointer');
     }
 
     function minimizeEssFrame(){
         var essIframe = $('#essIframe');
         essIframe
             .attr('maximized','false')
-            .css('position','fixed')
+            .css('position','relative')
             .css('z-index','100')
-            .css('border','1px solid gray')
-            .css('background-color','#66A3C7');
-
-        if (isBigScreen()){
-            essIframe
-                .css('top','300px')
-                .css('left','calc(50% - 5px)')
-                .css('width','50%')
-                .css('height','calc(100% - 305px)');
-        }
-        else {
-            essIframe
-                .css('top','300px')
-                .css('left','635px')
-                .css('width','calc(100% - 640px)')
-                .css('height','calc(100% - 305px)');
-        }
+            .css('width', 'calc(100% - 80px)')
+            .css('height', '500px')
+            .css('top', 0)
+            .css('left', '42px');
     }
 
     function maximizeEssFrame(){
         var essIframe = $('#essIframe');
         essIframe
             .attr('maximized','true')
+            .css('position','fixed')
             .css('top', '50px')
-            .css('left', '50px')
-            .css('width', 'calc(100% - 55px)')
-            .css('height', 'calc(100% - 55px)');
+            .css('left', 0)
+            .css('width', 'calc(100% - 20px)')
+            .css('height', 'calc(100% - 80px)');
+
     }
 
     function collectTimmiHours(){
         $('.day-date').each(function() {
-            var date = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
-            var year = date.substring(0, 4);
-            var month = date.substring(5,7) - 1;
             var day = $(this).text();
-            date = moment(new Date(year, month, day));
+            date = moment(new Date(getTimmiYear(), getTimmiMonth(), day));
             var hoursDiff = $(this).parent().parent().find('text.amount').text();
             var totalHours = getTimmiHoursForDay($(this).closest('day-attendance'), date);
 
-            var essIframe = document.getElementById('essIframe');
-            if (essIframe){
-                essIframe.contentWindow.postMessage({
-                    day: date.format('YYYY-MM-DD'),
-                    totalHours: totalHours
-                }, $('#essIframe').attr('src'));
-            }
+            sendToEssFrame({
+                day: date.format('YYYY-MM-DD'),
+                totalHours: totalHours
+            });
         });
 
         setTimeout(collectTimmiHours, 500);
+    }
+
+    function getTimmiMonth(){
+        var date = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+        var month = date.substring(5,7) - 1;
+        return month;
+    }
+
+    function getTimmiYear(){
+        var date = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+        var year = date.substring(0, 4);
+        return year;
+
+    }
+
+    function sendToEssFrame(data){
+        var essIframe = document.getElementById('essIframe');
+        if (essIframe){
+            essIframe.contentWindow.postMessage(data, '*');
+        }
     }
 
     function getTimmiHoursForDay(dayRowElement, day){
@@ -694,7 +972,7 @@
         var row = $('#employee_kostl_l').closest('tr');
         row.css('white-space', 'nowrap');
 
-        var link = $('<td><a style="font-family:arial;font-size:12px;" href="' + self.location.href + '" target="_top">Fullscreen</a></td>');
+        var link = $('<td><a style="font-family:arial;font-size:12px;margin-right:10px;" href="' + self.location.href.replace('&closeAfterLogin','') + '" target="_top">Fullscreen</a></td>');
         row.append(link);
 
         var isSaferpayUser = row.find('span:contains("CH08804041")').length === 1;
@@ -704,9 +982,24 @@
             row.append(wbsLink);
         }
         else {
-            var feedbackHelpLink = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a hreF="mailto:dragan.ignjic@six-group.com?subject=Timmi ESS Fusion - Feedback / Help">Feedback / Help</a></td>');
-            row.append(feedbackHelpLink);
+            var cell = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"></td>');
+            cell.append(createFeedbackHelpLink());
+            row.append(cell);
         }
+
+        var logoutCell = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"></td>');
+        row.append(logoutCell);
+        var logoutLink = $('<a href="#">Logout</a>')
+        setButtonStyle(logoutLink);
+        logoutCell.append(logoutLink);
+        logoutLink.click(function(){
+            setCookie('SAP_SESSIONID_P01_360', 'LoggedOut;SameSite=None;Secure')
+            $('#refreshIcon').click();
+        });
+    }
+
+    function createFeedbackHelpLink(){
+        return $('<a hreF="mailto:dragan.ignjic@six-group.com?subject=Timmi ESS Fusion - Feedback / Help">Feedback / Help</a>');
     }
 
     function isSessionTimedOut(){
@@ -764,11 +1057,20 @@
 
     function fixLayout(){
         $('head').append('<link _id="urstyle" rel="stylesheet" type="text/css" href="/sap/public/bc/bsp/Design2008/themes/sap_tradeshow/ur/ur_sf3.css?7.33.3.72.0">');
+        $('body').css('background-color','white');
+        //         $('body > table').css('background-color','#EAF1F6');
+        $('body > table').css('padding','5px');
 
         //fix overall size
         $('#refreshIcon').closest('table').parents().closest('table').css('height','1%');
         $('#refreshIcon').parents('tr').css('height','1%');
-        $('body > table').css('height','100%');
+        $('#refreshIcon').parents('table').css('width','100%');
+        $('table').attr('cellspacing', 0);
+        $('#TSForm').find('table').first()
+            .css('width','1%')
+            .removeAttr('align')
+            .css('background-color','#EAF1F6');
+        $('#dateRef').closest('table').css('padding','5px');
 
         $('#htmlb_image_2').hide();
 
@@ -900,6 +1202,38 @@
         setButtonStyle($('#etc-button'));
         setButtonStyle($('#eticketopen'));
         setButtonStyle($('#changePeriodButton'));
+
+        // move bottom bar higher up so there is no empty space
+        $('#mainTable').closest('tr').css('height','1%');
+        $('#TSForm').css('margin', 0);
+
+        // move icon info row inside bottom bar to save vertical space
+        var iconInfoBar = getIconInfoBar();
+        iconInfoBar.css('white-space','nowrap');
+        var newCell = $('<td style="width:100%;text-align:right;"></td>');
+        newCell.append(iconInfoBar);
+        $('#refreshIcon').closest('td').parent().append($('<td style="width:100%"></td>'));
+        $('#refreshIcon').closest('td').parent().append(newCell);
+        $('#refreshIcon').closest('table').appendTo($('#TSForm').find('table').first());
+        $('#refreshIcon').closest('table')
+            .css('background-color','lightblue')
+            .css('padding','5px');
+
+        // remove useless empty row
+        //$('tr[height="10"]').filter(function() { return $(this).find('td').children().length == 0; }).hide();
+
+        $('body > table > tbody > tr:nth-child(2)').hide();
+
+    }
+
+    function getIconInfoBar() {
+        return $('table').filter(function(){
+            return $(this).find('img').length == 8 &&
+                $(this).find('img[src="saved.gif"]').length == 1 &&
+                $(this).find('img[src="released.gif"]').length == 1 &&
+                $(this).find('img[src="approved.gif"]').length == 1 &&
+                $(this).find('img[src="rejected.gif"]').length == 1;
+        });
     }
 
     function addWeekButtons() {
@@ -907,26 +1241,49 @@
             var container = $('input[id="myinputfield"]').closest('td');
             container.children().hide();
             var currentWeekNumber = parseInt($('#timesheet_pperiod').val().split('.')[0]);
-            for (var j = Math.max(1, currentWeekNumber - 5); j <= currentWeekNumber + 1;j++){
-                var weekBtn = $('<button type="button" style="margin-right:10px;background-color:#66A3C7;border:1px solid gray;color:white;">Week ' + j + '</button>');
-                setButtonStyle(weekBtn);
-                if (currentWeekNumber == j){
-                    weekBtn.css('background-color','white');
-                    weekBtn.css('color','black');
-                }
-                var isoWeek = moment().isoWeek(j);
-                if (moment().isoWeek() == j){
-                    weekBtn.text('current');
-                }
-                weekBtn.attr('title', isoWeek.startOf('isoWeek').format('DD.MM.YYYY') + ' - ' + isoWeek.endOf('isoWeek').format('DD.MM.YYYY'));
-                weekBtn.attr('weekNum', ('0' + j).substr(-2) + '.' + (new Date).getFullYear());
-                weekBtn.click(function(){
-                    $('#timesheet_pperiod').val($(this).attr('weekNum'));
-                    $('#changePeriodButton').click();
-                });
-                container.append(weekBtn);
-            }
+            addWeekButtonsToContainer(container, currentWeekNumber);
         }
+    }
+
+    function addWeekButtonsToContainer(container, selectedWeek) {
+        var firstWeekToDisplay = Math.max(1, selectedWeek - 5);
+        var lastWeekToDisplay = Math.min(53, firstWeekToDisplay + 6);
+        var todayWeek = moment().isoWeek();
+
+        if (firstWeekToDisplay > todayWeek){
+            container.append(createWeekBtn(todayWeek, 0));
+        }
+
+        for (var j = firstWeekToDisplay; j <= lastWeekToDisplay;j++){
+            container.append(createWeekBtn(j, selectedWeek));
+        }
+
+        if (lastWeekToDisplay < todayWeek){
+            container.append(createWeekBtn(todayWeek, 0));
+        }
+    }
+
+    function createWeekBtn(weekNr, selectedWeek){
+        var weekBtn = $('<button type="button" style="margin-right:10px;background-color:#66A3C7;border:1px solid gray;color:white;">Week ' + weekNr + '</button>');
+        setButtonStyle(weekBtn);
+
+        var isoWeek = moment().isoWeek(weekNr);
+        if (moment().isoWeek() == weekNr){
+            weekBtn.text('current week');
+            weekBtn.css('text-decoration','underline');
+        }
+        if (selectedWeek == weekNr){
+            weekBtn.css('background-color','white');
+            weekBtn.css('color','black');
+        }
+        weekBtn.attr('title', isoWeek.startOf('isoWeek').format('DD.MM.YYYY') + ' - ' + isoWeek.endOf('isoWeek').format('DD.MM.YYYY'));
+        weekBtn.attr('weekNum', ('0' + weekNr).substr(-2) + '.' + (new Date).getFullYear());
+        weekBtn.click(function(){
+            $('#timesheet_pperiod').val($(this).attr('weekNum'));
+            $('#changePeriodButton').click();
+        });
+
+        return weekBtn;
     }
 
     function showAddItem(){
@@ -966,6 +1323,10 @@
 
     function listenForTimmiHours(){
         $(window).on('message', function (e) {
+            if (!e.originalEvent.data.day || !e.originalEvent.data.totalHours){
+                return;
+            }
+
             var timmiRow = $('#timmi_row');
             var diffRow = $('#diff_row');
             var essRow = $('#ess_row');
