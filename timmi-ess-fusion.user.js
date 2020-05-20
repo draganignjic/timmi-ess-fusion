@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.28
+// @version      0.6.29
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -1059,8 +1059,8 @@
         if (!isWorkdayInputField(element)){
             return false;
         }
-        var essTotal = $('[id="' + element.attr('id').replace(new RegExp("[0-9]", "g"), "2") + '"]');
-        var diffCell = $('[id="' + element.attr('id').replace(new RegExp("[0-9]", "g"), "2") + '_diff' + '"]');
+        var essTotal = $('[id="' + element.attr('id').replace(new RegExp("[0-9]", "g"), '').replace('[]','[2]') + '"]');
+        var diffCell = $('[id="' + element.attr('id').replace(new RegExp("[0-9]", "g"), '').replace('[]','[2]') + '_diff' + '"]');
         var diff = parseFloat(diffCell.val().replace(',','.'));
         if (!diff) {
             alert('There are no hours to fill');
