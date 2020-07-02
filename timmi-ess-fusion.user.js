@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.29
+// @version      0.6.30
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -681,6 +681,10 @@
 
                 var start = moment(day.format('YYYY-MM-DD') + ' ' + startH + ':' + startM);
                 var end = moment(day.format('YYYY-MM-DD') + ' ' + endH + ':' + endM);
+
+                if (endH == 0 && endM == 0){
+                    end = end.add(1, 'days');
+                }
 
                 var duration = moment.duration(end.diff(start));
                 totalHours += duration.asHours();
