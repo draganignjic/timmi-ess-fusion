@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.31
+// @version      0.6.32
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -708,7 +708,7 @@
             row.append(wbsLink);
         }
         else {
-            var feedbackHelpLink = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a hreF="mailto:dragan.ignjic@six-group.com?subject=Timmi ESS Fusion - Feedback / Help">Feedback / Help</a></td>');
+            var feedbackHelpLink = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a hreF="mailto:timmi-ess-fusion@dragan.ch?subject=Timmi ESS Fusion - Feedback / Help">Feedback / Help</a></td>');
             row.append(feedbackHelpLink);
         }
     }
