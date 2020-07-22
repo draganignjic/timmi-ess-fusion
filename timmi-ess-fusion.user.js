@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.33
+// @version      0.6.34
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -1092,11 +1092,15 @@
             var newText = $(this).text().replace('/','.')
             .replace('MO','Monday<br>')
             .replace('TU','Tuesday<br>')
+            .replace('DI','Tuesday<br>')
             .replace('WE','Wednesday<br>')
+            .replace('MI','Wednesday<br>')
             .replace('TH','Thursday<br>')
+            .replace('DO','Thursday<br>')
             .replace('FR','Friday<br>')
             .replace('SA','Saturday<br>')
-            .replace('SU','Sunday<br>');
+            .replace('SU','Sunday<br>')
+            .replace('SO','Sunday<br>');
 
             newText += '.' + new Date().getFullYear();
             if (newText.indexOf(moment().format('DD.MM.YYYY')) != -1){
