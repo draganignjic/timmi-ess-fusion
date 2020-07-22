@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.32
+// @version      0.6.33
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -886,7 +886,7 @@
         $('#gotoNextPeriodIcon').attr('align','');
 
         // week total title
-        var weekTotalTitle = $('span:contains("Week total")');
+        var weekTotalTitle = $('span:contains("Week total"),span:contains("Summe Woche")');
         var weekTotalCell = weekTotalTitle.parent();
         weekTotalTitle.remove('');
         weekTotalCell.parent().css('vertical-align','bottom');
