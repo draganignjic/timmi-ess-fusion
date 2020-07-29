@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.34
+// @version      0.6.35
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -208,6 +208,23 @@
         }
 
         $('th').css('background-color','lightblue');
+
+        // fix paging-buttons
+        setButtonStyle($('.urBtnSml'));
+        $('.urBtnSml').parent().css('padding','5px');
+        $('.urBtnSml').css('height','10px');
+        $('.urBtnSml').children().css('font-size','10px');
+        $('.urBtnPadding').css('line-height','10px');
+
+
+
+        // add paging buttons
+        var favPaging = $('.urBtnSml').closest('tr').clone();
+        favPaging.attr('id','favPaging');
+        var favPagingTbl = $('<table/>');
+        favPagingTbl.css('margin-bottom','10px');
+        favPagingTbl.append(favPaging);
+        $('.urTbsWhl').prepend(favPagingTbl);
     }
 
     async function addFavouritesFeature(){
@@ -312,7 +329,7 @@
             if (savedFavouriteTitle && ! favFounds.hasOwnProperty(txt)) {
                 favFounds[txt] = true;
                 favouritesTable.show();
-                var favRow = $('<tr></td>');
+                var favRow = $('<tr></tr>');
                 favRow.append($('<td style="vertical-align:middle"><a href="#" class="addFromFavouritesBtn" wbsKey="' + $(this).text() + '">Select</a></td>'));
                 var favicon = $('<img style="width:20px;height:20px;cursor:pointer;vertical-align:middle;" title="Delete item from favourites" wbsKey="' + $(this).text() + '" src="' + _faviconFull + '"/>');
                 favicon.click(async function(){
@@ -327,7 +344,7 @@
                 favouritesTable.append(favRow);
 
                 favRow.children('td').css('border', '1px solid gray');
-                favRow.children('td').css('padding', '5px 10px');
+                favRow.children('td').css('padding', '1px 10px');
                 favRow.children('td').css('white-space', 'nowrap');
 
                 favRow.find('.addFromFavouritesBtn').click(function(){
