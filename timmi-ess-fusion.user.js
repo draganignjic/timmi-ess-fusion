@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.35
+// @version      0.6.36
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -216,8 +216,6 @@
         $('.urBtnSml').children().css('font-size','10px');
         $('.urBtnPadding').css('line-height','10px');
 
-
-
         // add paging buttons
         var favPaging = $('.urBtnSml').closest('tr').clone();
         favPaging.attr('id','favPaging');
@@ -225,6 +223,11 @@
         favPagingTbl.css('margin-bottom','10px');
         favPagingTbl.append(favPaging);
         $('.urTbsWhl').prepend(favPagingTbl);
+
+        // fix clicking in description field for firefox
+        var descField = $('[name=timesheet_search_wbsel]');
+        descField.attr('id','s_description');
+        descField.attr('onfocus',"sapUrMapi_InputField_focus('s_description',event)");
     }
 
     async function addFavouritesFeature(){
