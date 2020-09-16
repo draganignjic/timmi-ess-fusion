@@ -15,7 +15,7 @@
 // @updateURL    https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
 // ==/UserScript==
 
-(async () => {
+(function () {
 
     let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
     let _essLoginUrl = "https://www.corp.worldline.com//irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1578481318556&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet%20entry&NavMode=10";
@@ -27,32 +27,34 @@
     let _faviconEmpty = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAN9SURBVDhPhVRbTxNBFJ6ZbbeCaIioiKAmBgxovYD6YEAxiBTDJQFsxRA0+uqDJr7rkyb+Ai8PitGYIC03tV4iEYJIRETUeEFQC0FQQWICoaXd7vidlVWoTfzS0z23+c7MzjnLHQ6H4ICUkuHBCKQTyN6dnakmrUprg6mMf/XtevDoacCMESLXGWTRIMTvUGLy2kqkbYdkJSxfVTk3FgVMEGtkFVOPj1OZEMoJeL8aIpTj8YtsRowQuY6ESkUlIxQ49uUjZROT4fOQC4yJjY7CfXsoFklm8gjDA0SSGbZFpd1N+6d+XoRcgu7ninoiGpmJf45MINtVUbIB4QIm9evN3pYfkDHoN+BzOMuLM8y8fzZx8li1NX3D5iRFjV3DuQUi1iALIrJxlxnazORGT6O3jxbsLytar6hxvVj6BuQdePqkrg9JGR7UApODvS97v/GrNZdf4z3ZjRJ/IMP4G8Wia7U33acMz+xuDrgqzqBYFYqtgCgUM8GZ3sNraq7gBnkil9olPazV6VpgaHT403DH8/7gbN68o5l6zrY0K1oqWbHYVgvFelhyyyHO5IiQWqAIaRNwuHQpf9Y13vv0PzLC4+7+kLvxng+bXIC1TkRHtKC/UJkJhr9npKe1ot+qhWKpSl+Xevfd+76xSIK5OoHsSmdZMVdsblgTocBUvrvh9nujbdyepu5waKYEqs2iLnhQUVaS/j+yA7hqpthqYX0nsvombz/F/rSNu76pU9eIlMdZ1Jj7ZaUOvPToZK6KUjv6kchGg/6pPJOMYOzQXFDnaWpnunYOnpWqLdYejYxs/BbBVJkevtDQ7P1sxkiM0TNBDrTEVmjTE2MjT8xY/q6smLyczBjT7nv7qgs5PzDoDrL/FooYvb2522PgzYfR8rCta3r1ygSOd3U0ISnVtyw57TPpKSuW8N63vjBy7uOA2UUFO+Pnbmre6C1ZnpKHLcair285y0vsO3Ly2piwXkS5ceSOk56du6fVWV5ql7rmhc+6cPHSAoMJIJ55XxsuLHTTZOcKa+wzKJkgPz0yNJD1ZfDDVia109hDJsa0C99E46uDNejjv8eO/NoY1dCoVRijFrTDFoze2fbOFzMktTc9Z0OByS0YyRbkHKFccBSaZATzyAZgv8b4+JgePNjQUF/kabwzQH5d1ylm5MD30eOuK0aOC0UH4O8xY1JK9guqLwHJVyxq0wAAAABJRU5ErkJggg==";
     let _faviconFull = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAOSSURBVDhPhVRdbBNHEJ7du3PsYNP8kNIAaZBIAxGIgEARqCmEKqGmhkaNRF6qvlXqY92Xoko8IqG88MpDpYoKBYu6/KRWkYCgqCEISFWaFqmlaX5w5DQ0VogDzuV8vttlZu2jSeSWTxrd7OzOtzOzM8cAEQ6HmZSSM6aWgLr60jqyr8ao2Nw6gCuenb5/6OpgKuftEejscp0jGRGRrADnBVPFmy3dLpTtc8HXEqzd3b18rwSAIytFpxbeLZ5eFbBAcn90jTEHJJKXRSsDttojrI6ORKVZioxw5P2jhwQYu5uqb0JTdT+g3hyJHG2jvdVkHg9XFsRqMlpLLRQ1uAVvVQ6i/AikCy0YLUXmgVIuSfZxV9s2lxlHGpDMp5lKGiqHQKDtow8PNnrnVvuxLz85oG/ftX89lNXUC+6vB6ajsHrJtFa8b0dX4wkI+tLK4bn9OlwZ7QEG7m8g3SGQ4jGTzhQIO8mtVPLe8EianT/31YiLtVEeRWjMUY+wBSPaWZMoWgv4dbYTxjNvg5mvAlfqRWsBGtg/sW/Off03vk3tjnXXZN3aByyIRAEjg1EUevG/gMmB5bwGWbtaTmT2w6On7YyDm+K6Mx/BFOb+mn+HUZ3KjflXkhHoTEDPYJQGG8u0YiXdaWkvhDXT5umdW+sGXBY6nnzW4q8L/QJlerbo9v+YyW6HW1OfgxB6ilkzHbErA6OqbWKXbzzg+fmI5QSfX398QhX/VVBkyc+IbIpZs+2xvjtjZH/ZNhcu9w9rztNjS/mKxRuTX0DODSrHUniWewPJoujHJ5mZejfWNzhe3Co0ttdLvZdu3eHCPJ3Nr4OMtVHZSiEv/FQ7YCJ3Npa4mySbF5gaPQ/KyIw9Bl+CmvKXl4KQmhIPVYGkehDJfYdpTX7EQ7Ji9DpbN/gl0zs2hh7iTY6yU0t89+cZJaQT6IU3hbC3QTtwvL1x7fKgVoxeqLa5DYMO0ksvYJ2olrdTn0LOKX+Uc9b8QTrZqIabQiNIyH1GRUNHkevflL0bcPSO0TdtbpGJsVPwZHHbki7Nk+nJ+3tmJ+7t1YR58slik/k97v2zuFUy/P/gLy1CPl5QK1IGpqmaUNfjnF6DpZnm3m8TPf3D03b/cMq+EE/0cGu6GYT7w+9z7zGMh1407JERvJQVaOg5OOO6u9Adj8c/iPXdniC7EIJGR53pvTo0eTF+qdMQC10c8qMY5c/enpQSXgBz0OfpwrqkcAAAAABJRU5ErkJggg==";
 
-    if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('/login') == -1){
-        await appendEss();
-        collectTimmiHours();
-        fixTimmiLayout();
-    }
+    (async () => {
+        if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('/login') == -1){
+            await appendEss();
+            collectTimmiHours();
+            fixTimmiLayout();
+        }
 
-    await sessionHandling();
+        await sessionHandling();
 
-    if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
-        fixLayout();
-        addFillButtons();
-        formatDayTitles();
-        hideWeekend();
-        await addTimmiHours();
-        keepSessionOpen();
-        listenForTimmiHours();
-        showAddItem();
-        enableDotDecimalEntry();
-        enableEnterKeySave();
-        addTopRightLinks();
-        removeTargetHours();
-        fixWbsOverviewLayout();
-        await addFavouritesFeature();
-        calculateDiffsOnChange();
-        addWeekButtons();
-    }
+        if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
+            fixLayout();
+            addFillButtons();
+            formatDayTitles();
+            hideWeekend();
+            await addTimmiHours();
+            keepSessionOpen();
+            listenForTimmiHours();
+            showAddItem();
+            enableDotDecimalEntry();
+            enableEnterKeySave();
+            addTopRightLinks();
+            removeTargetHours();
+            fixWbsOverviewLayout();
+            await addFavouritesFeature();
+            calculateDiffsOnChange();
+            addWeekButtons();
+        }
+    })();
 
     function fixTimmiLayout(){
         if ( isBigScreen()){
