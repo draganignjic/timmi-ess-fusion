@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.37
+// @version      0.6.38
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -1101,10 +1101,10 @@
     }
 
     function keepSessionOpen(){
-        // need to refresh after 25 minutes because ESS automatically redirects to timeout.html after 30min
+        // need to refresh after 20 minutes because ESS automatically redirects to timeout.html after 30min. 25min is still too long
         setTimeout(function(){
-            $('#refreshIcon').click();
-        }, 25 * 60 * 1000);
+            $('#save').click();
+        }, 20 * 60 * 1000);
     }
 
     function formatDayTitles(){
