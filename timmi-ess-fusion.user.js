@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.41
+// @version      0.6.42
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -611,6 +611,14 @@
                 $('#legacyLogin').remove();
             }
         });
+
+        // workaround to ensure that login screen is displayed.
+        // this is necessary because worldline logout-url has an invalid certificate
+        setTimeout(function() {
+            if ($('#legacyLogin').length > 0){
+                 essIframe.attr('src', _essStartUrl + '/../timeout.html');
+            }
+        }, 5000);
     }
 
     function setButtonStyle(btn){
