@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Protime ESS Fusion
-// @namespace    https://github.com/draganignjic/timmi-ess-fusion/
+// @namespace    https://github.com/draganignjic/timmi-ess-fusion/protime-ess-fusion.user.js
 // @version      0.1
 // @description  Embed ESS Timesheet in Protime
 // @author       Dragan Ignjic (Saferpay)
