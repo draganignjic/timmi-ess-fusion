@@ -514,7 +514,7 @@
             .css('bottom','14px')
             .css('right','167px')
             .css('width','100px')
-            .css('height','8px');
+            .css('height','20px');
 
         var minMaxEssBtn = $('<button>Maximize</button>');
         $('body').append(minMaxEssBtn);
