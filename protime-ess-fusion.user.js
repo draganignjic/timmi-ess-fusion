@@ -5,7 +5,7 @@
 // @description  Embed ESS Timesheet in Protime
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
-// @include      *.myProtime.eu*
+// @include      *.myprotime.eu*
 // @grant        GM.getValue
 // @grant        GM.setValue
 // @grant        GM_addValueChangeListener
