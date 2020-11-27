@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         Timmi ESS Fusion
-// @namespace    https://github.com/draganignjic/timmi-ess-fusion/
+// @name         Protime ESS Fusion
+// @namespace    https://github.com/draganignjic/timmi-ess-fusion/blob/master/timmi-ess-fusion.user.js
 // @version      0.6.42
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
