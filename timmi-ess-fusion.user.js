@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Protime ESS Fusion
-// @namespace    https://github.com/draganignjic/timmi-ess-fusion/blob/master/timmi-ess-fusion.user.js
-// @version      0.6.42
+// @name         Timmi ESS Fusion
+// @namespace    https://github.com/draganignjic/timmi-ess-fusion/
+// @version      0.6.43
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -602,6 +602,7 @@
                     .css('left', 'calc(100% - 280px)')
                     .css('width', '270px')
                     .css('height', '280px');
+                essIframe.attr('loginRequired', 'true');
             }
             else if (e.originalEvent.data.loggedIn) {
                 minimizeEssFrame();
@@ -612,10 +613,11 @@
             }
         });
 
+
         // workaround to ensure that login screen is displayed.
-        // this is necessary because worldline logout-url has an invalid certificate
+        // this is necessary because worldline logout-url has an invalid ssl certificate
         setTimeout(function() {
-            if ($('#legacyLogin').length > 0){
+            if ($('#legacyLogin').length > 0 && essIframe.attr('loginRequired') != 'true'){
                  essIframe.attr('src', _essStartUrl + '/../timeout.html');
             }
         }, 5000);
