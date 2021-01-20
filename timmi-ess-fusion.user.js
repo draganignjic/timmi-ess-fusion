@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.44
+// @version      0.6.45
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -151,7 +151,7 @@
         });
 
         // add toggle view link
-        var showFilterBtn = $('<buton style="margin-bottom:5px;padding:5px;">Toggle Columns</button>');
+        var showFilterBtn = $('<buton style="margin-bottom:5px;padding:5px;cursor:pointer;">Toggle Columns</button>');
         setButtonStyle(showFilterBtn);
         $('.app').prepend(showFilterBtn);
         showFilterBtn.click(function(){
@@ -197,6 +197,8 @@
 
         // hide useless title
         $('#myworklist-scrl').hide();
+
+        $('#myworklist-cnt-0').css('width','1%');
 
         // hide empty and unused cells
         $('#super').find('tr').first().remove();
