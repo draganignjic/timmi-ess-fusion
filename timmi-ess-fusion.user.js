@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.43
+// @version      0.6.44
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -872,6 +872,17 @@
         // make wbs title column max and all other columns min width
         $('img[title*="Delete"]').closest('tr').find('td').css('width', '1%');
         $('img[title*="Delete"]').closest('tr').find('td[align="left"]:last').css('width', '100%');
+
+        // align elements because some wbs are shifted one cell to the left
+        $('img[title*="Delete"]').closest('td').next().each(function() {
+            if ($(this).text().trim() != '') {
+                $(this).next().children().prependTo($(this).next().next());
+                $(this).children().prependTo($(this).next());
+                $(this).next().children().slice(1).hide();
+                $(this).next().next().children().slice(1).remove();
+            }
+        });
+
 
         // add missing coloring of input cells (saved, released, approved, rejected) which are just displayed in IE
         $('script[for][event="onload"]').each(function(){
