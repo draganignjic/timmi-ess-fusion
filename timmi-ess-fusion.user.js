@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.45
+// @version      0.6.46
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -52,10 +52,11 @@
         await addFavouritesFeature();
         calculateDiffsOnChange();
         addWeekButtons();
+        addEndOfMonthWarning();
     }
 
     function fixTimmiLayout(){
-        if ( isBigScreen()){
+        if (isBigScreen()){
             return;
         }
 
@@ -98,7 +99,6 @@
     }
 
     function calculateDiffForDay(element) {
-
         var id = element.attr('id');
         var blurEvent = $('script[for="' + id + '"][event="onblur"]');
         if (blurEvent.length === 1){
@@ -620,7 +620,7 @@
         // this is necessary because worldline logout-url has an invalid ssl certificate
         setTimeout(function() {
             if ($('#legacyLogin').length > 0 && essIframe.attr('loginRequired') != 'true'){
-                 essIframe.attr('src', _essStartUrl + '/../timeout.html');
+                essIframe.attr('src', _essStartUrl + '/../timeout.html');
             }
         }, 5000);
     }
@@ -1063,7 +1063,18 @@
         });
     }
 
-    function isInIframe () {
+    function addEndOfMonthWarning(){
+        var secondLastWorkday = getSecondLastWorkdayOfMonth();
+        $('span[weekTitle]').each(function(){
+            if ($(this).text().indexOf(secondLastWorkday.format('DD.MM.YYYY')) != -1){
+                $(this).css('background-color','lightyellow');
+                var text = secondLastWorkday.format('dddd DD.MM.YYYY') + ' is the second last working day of ' + secondLastWorkday.format('MMMM') + '. You should fill out and release the whole month no later than ' + secondLastWorkday.format('dddd') + '.';
+                $(this).closest('table').before($('<span style="background-color:lightyellow;padding:5px;font-size:12px;">' + text + '</span>'));
+            }
+        });
+    }
+
+    function isInIframe(){
         try {
             return window.self !== window.top;
         } catch (e) {
@@ -1245,7 +1256,24 @@
         }
         return null;
     }
+
     function eraseCookie(name) {
         document.cookie = name+'=; Max-Age=-99999999;';
+    }
+
+    function getSecondLastWorkdayOfMonth() {
+        var endOfMonth = moment().endOf('M');
+        switch(endOfMonth.isoWeekday()) {
+            case 1:
+                return endOfMonth.subtract(3, 'days');
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                return endOfMonth.subtract(1, 'days');
+            case 6:
+            case 7:
+                return endOfMonth.subtract(3, 'days');
+        }
     }
 })();
