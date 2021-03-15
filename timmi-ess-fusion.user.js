@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.47
+// @version      0.6.48
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -962,6 +962,8 @@
         setButtonStyle($('#etc-button'));
         setButtonStyle($('#eticketopen'));
         setButtonStyle($('#changePeriodButton'));
+
+        $('#message:contains("Unsaved hours exist in current week.  Please save or refresh your timesheet.")').append($('#refreshIcon').clone().attr('id',''));
     }
 
     function addWeekButtons() {
@@ -1151,7 +1153,7 @@
     function keepSessionOpen(){
         // need to refresh after 20 minutes because ESS automatically redirects to timeout.html after 30min. 25min is still too long
         setTimeout(function(){
-            $('#changePeriodButton').click();
+            $('#refreshIcon').click();
         }, 20 * 60 * 1000);
     }
 
