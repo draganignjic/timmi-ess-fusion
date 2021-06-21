@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.48
+// @version      0.6.49
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -647,6 +647,7 @@
             .css('border','1px solid gray')
             .css('color','white')
             .css('font-size','10px')
+            .css('font-family','arial')
             .css('white-space','nowrap')
             .css('border-radius','2px')
             .css('padding','5px')
