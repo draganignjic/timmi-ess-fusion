@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.50
+// @version      0.6.51
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -600,7 +600,8 @@
             .css('right','0')
             .css('width','300px')
             .css('text-align','center')
-            .css('font-size','16px');
+            .css('font-size','16px')
+            .css('font-family','arial');
         legacyLogin.click(function(){
             GM_addValueChangeListener('ess_sessionUrl', function(name, old_value, newSession, remote) {
                 if (newSession){
