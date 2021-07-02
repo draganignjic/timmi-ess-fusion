@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.51
+// @version      0.6.52
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -653,7 +653,8 @@
             .css('border-radius','2px')
             .css('padding','5px')
             .css('veritcal-align','middle')
-            .css('text-align','center');
+            .css('text-align','center')
+            .css('border-radius','5px');
     }
 
     function isBigScreen(){
@@ -667,6 +668,7 @@
             .css('position','fixed')
             .css('z-index','100')
             .css('border','1px solid gray')
+            .css('border-radius','10px')
             .css('background-color','#66A3C7');
 
         if (isBigScreen()){
@@ -755,6 +757,10 @@
             var wbsLink = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a href="' + _wbsLookupLink + '" target="_blank">Saferpay WBS Lookup</a> - <a href="' + _autmatixWbsLookupLink + '" target="_blank">Automatix</a></td>');
             row.append(wbsLink);
         }
+        else if (row.find('span:contains("10270394")').length === 1) {
+            var cheesyMessage = "RHJhZ2FuIExvdmVzIFlvdQ==";
+            row.append('<td style="text-align:right;width:100%;font-size:15px;padding-right:10px;line-height:5px;font-style: italic;">' + atob(cheesyMessage) + ' <span style="color:red;font-size:20px;font-style: normal">&#10084;</span></td>');
+        }
         else {
             var feedbackHelpLink = $('<td style="text-align:right;width:100%;font-size:12px;padding-right:10px;"><a hreF="mailto:timmi-ess-fusion@dragan.ch?subject=Timmi ESS Fusion - Feedback / Help">Feedback / Help</a></td>');
             row.append(feedbackHelpLink);
@@ -819,8 +825,10 @@
         $('head').append('<link _id="urstyle" rel="stylesheet" type="text/css" href="/sap/public/bc/bsp/Design2008/themes/sap_tradeshow/ur/ur_sf3.css?7.33.3.72.0">');
 
         //fix overall size
+        $('table[cellspacing=10]').attr('cellspacing','2');
         $('#refreshIcon').closest('table').parents().closest('table').css('height','1%');
         $('#refreshIcon').parents('tr').css('height','1%');
+        $('#refreshIcon').css('margin-left','7px');
         $('body > table').css('height','100%');
 
         $('#htmlb_image_2').hide();
@@ -836,8 +844,11 @@
         $('input[id="myinputfield"]').css('text-align','center');
 
         // current week box
-        $('input[name="timesheet_pperiod"]').css('width', '55px');
-        $('input[name="timesheet_pperiod"]').css('text-align', 'center');
+        $('input[name="timesheet_pperiod"]')
+            .css('height', '24px')
+            .css('width', '55px')
+            .css('text-align', 'center')
+            .css('border-radius', '5px');
 
         // remove "Hours" text
         $('span:contains("Hours")').filter(function(){ return $(this).text() == "Hours"}).text('');
@@ -865,9 +876,15 @@
             .attr('src', _saferpayLogo)
             .css('margin-right','10px')
             .wrap('<a href="https://www.saferpay.com" target="_blank"></a>');
-        $('.urGrpTtlBox').css('padding','5px');
 
-        $('.urGrpTtlBox').css('background-color', 'lightblue'); // #5FC7A9
+        $('.urGrpTtlBox')
+            .css('padding','5px')
+            .css('border-radius','5px')
+            .css('background-color', 'lightblue'); // #5FC7A9
+
+        // border for legend;
+        $('img[id^="htmlb_image_"]')
+            .css('border-radius','5px');
 
         // hide empty rows
         $('td:contains("      ")').filter(function() {
@@ -1106,18 +1123,17 @@
         }
 
         $('input[id*="hours"]:not([readonly])').each(function(){
-            $('<button type="button" class="fillDayBtn">Fill</button>').insertAfter($(this));
+            $('<a href="javascript:void(0);" class="fillDayBtn">Fill</a>').insertAfter($(this));
         });
 
         var btn = $('.fillDayBtn');
-        btn.css('width', '15px');
-        btn.css('height', '20px');
-        btn.css('font-size', '7px');
-        btn.css('margin-right', '10px');
-        btn.css('padding', '0px');
+        btn.css('font-size', '10px');
+        btn.css('margin-right', '6px');
+        btn.css('margin-left', '5px');
         btn.css('cursor', 'pointer');
         btn.css('vertical-align','middle');
-        btn.attr('title', 'fill / remove here the remaining hours from Timmi');
+        btn.css('display', 'inline');
+        btn.attr('title', 'fill / remove the remaining hours from Timmi here');
 
         btn.click(function() {
             if (fillCellWithDayDiff($(this).prev())){
@@ -1238,7 +1254,7 @@
 
         var diff_row = essHoursRow.clone();
         diff_row.attr('id', 'diff_row');
-        diff_row.find('span:contains("Total per day ESS")').text('Timmi/ESS difference');
+        diff_row.find('span:contains("Total per day ESS")').text('Timmi / ESS difference');
         essHoursRow.parent().append(diff_row);
 
         timmi_row.find('input').each(function(){
