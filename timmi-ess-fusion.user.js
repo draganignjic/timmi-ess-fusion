@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.52
+// @version      0.6.54
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -444,21 +444,22 @@
                     .empty()
                     .css('background-color','slategray')
                     .css('display','flex')
-                    .css('margin','10px')
+                    .css('margin','5px')
                     .css('justify-content','center');
 
                 var loginBox = $('<div></div>');
                 $('body').append(loginBox);
                 loginBox
                     .css('width','300px')
-                    .css('height','210px')
-                    .css('padding','10px')
+                    .css('height','260px')
+                    .css('padding','5px')
                     .css('font-family','arial')
                     .css('font-size','25px')
                     .css('background-color','white')
-                    .css('text-align','center');
+                    .css('text-align','center')
+                    .css('border-radius','5px');
 
-                loginBox.append($('<div style="color:#0066a1;">Timmi ESS Fusion</div>'));
+                loginBox.append($('<div style="background-color:lightblue;border-radius:5px;padding:5px;">Timmi ESS Fusion</div>'));
                 loginBox.append('<img style="margin:10px;" src="' + _saferpayLogo + '"/>');
                 var redirectLoginBox = $('<a href="#">Login</<a>');
                 redirectLoginBox
@@ -467,7 +468,8 @@
                     .css('margin','20px')
                     .css('padding','10px 40px')
                     .css('background-color','#0066a1')
-                    .css('display','inline-block');
+                    .css('display','inline-block')
+                    .css('border-radius','10px');
                 loginBox.append(redirectLoginBox);
 
                 redirectLoginBox.click(async function(){
@@ -538,7 +540,7 @@
         minimizeEssFrame();
 
         var checkForUpdatesBox = $('<div></div>');
-        checkForUpdatesBox.append($('<a style="color:white" href="' + _updateUrl +'">Check for Updates</a>'));
+        checkForUpdatesBox.append($('<a style="color:white;text-decoration: none;" href="' + _updateUrl +'">Check for Update</a>'));
         setButtonStyle(checkForUpdatesBox);
         $('body').append(checkForUpdatesBox);
         checkForUpdatesBox
@@ -546,9 +548,9 @@
             .css('font-size','10px')
             .css('line-height','8px')
             .css('z-index','100')
-            .css('bottom','14px')
-            .css('right','167px')
-            .css('width','100px')
+            .css('bottom','15px')
+            .css('right','190px')
+            .css('width','80px')
             .css('height','8px');
 
         var minMaxEssBtn = $('<button>Maximize</button>');
@@ -556,9 +558,9 @@
         setButtonStyle(minMaxEssBtn);
         minMaxEssBtn
             .css('position','fixed')
-            .css('bottom','14px')
-            .css('right','92px')
-            .css('width','70px')
+            .css('bottom','15px')
+            .css('right','105px')
+            .css('width','80px')
             .css('height','20px')
             .css('z-index','100');
 
@@ -566,9 +568,9 @@
         $('body').append(showHideEssBtn);
         showHideEssBtn
             .css('position','fixed')
-            .css('bottom','14px')
-            .css('right','17px')
-            .css('width','70px')
+            .css('bottom','15px')
+            .css('right','20px')
+            .css('width','80px')
             .css('height','20px')
             .css('z-index','100');
         setButtonStyle(showHideEssBtn);
@@ -616,8 +618,8 @@
             if (e.originalEvent.data.loginRequired) {
                 essIframe
                     .css('top', 'calc(100% - 290px)')
-                    .css('left', 'calc(100% - 280px)')
-                    .css('width', '270px')
+                    .css('left', 'calc(100% - 290px)')
+                    .css('width', '275px')
                     .css('height', '280px');
                 essIframe.attr('loginRequired', 'true');
             }
