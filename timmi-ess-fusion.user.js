@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.54
+// @version      0.6.55
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -562,18 +562,20 @@
             .css('right','105px')
             .css('width','80px')
             .css('height','20px')
-            .css('z-index','100');
+            .css('z-index','100')
+            .css('padding','0');
 
         var showHideEssBtn = $('<button>Hide ESS</button>');
         $('body').append(showHideEssBtn);
+        setButtonStyle(showHideEssBtn);
         showHideEssBtn
             .css('position','fixed')
             .css('bottom','15px')
             .css('right','20px')
             .css('width','80px')
             .css('height','20px')
-            .css('z-index','100');
-        setButtonStyle(showHideEssBtn);
+            .css('z-index','100')
+            .css('padding','0');
 
         showHideEssBtn.click(function(){
             essIframe.toggle();
@@ -652,11 +654,12 @@
             .css('font-size','10px')
             .css('font-family','arial')
             .css('white-space','nowrap')
-            .css('border-radius','2px')
             .css('padding','5px')
+            .css('border-radius','2px')
             .css('veritcal-align','middle')
             .css('text-align','center')
-            .css('border-radius','5px');
+            .css('border-radius','5px')
+            .css('cursor','pointer');
     }
 
     function isBigScreen(){
