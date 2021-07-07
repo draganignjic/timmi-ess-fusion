@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.56
+// @version      0.6.57
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -1103,7 +1103,12 @@
                         else {
                             diffCell.attr('title', 'You have ' + diff.toFixed(2) + ' hours more in ESS compared to Timmi');
                         }
-                        fillButtons.show();
+                        fillButtons.each(function(){
+                            var hourInCell = parseFloat($(this).prev().val());
+                            if (hourInCell > 0 || diff < 0) {
+                                $(this).show();
+                            }
+                        });
                     }
                 }
             });
