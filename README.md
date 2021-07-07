@@ -51,6 +51,7 @@ This is how ESS works in combination with Timmi Timesheet :scream:
   - Weeks selection shortcuts/overview
   - Hide the weekend
   - No unnecessary scrollbars
+  - Month end warning
 
 - Timmi Timesheet integration (For employees in Switzerland) 
   - ESS is embedded in Timmi
