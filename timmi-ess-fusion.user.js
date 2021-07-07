@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.55
+// @version      0.6.56
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -987,6 +987,9 @@
         setButtonStyle($('#eticketopen'));
         setButtonStyle($('#changePeriodButton'));
 
+        // hour input fields should align left because fill buttons are on the right
+        $('input[id^=timesheet_tsdurationdata]').parent().parent().removeAttr('align');
+
         $('#message:contains("Unsaved hours exist in current week.  Please save or refresh your timesheet.")').append($('#refreshIcon').clone().attr('id',''));
     }
 
@@ -1070,6 +1073,9 @@
                     $(this).val('');
                     diffCell.val('');
                     diffCell.css('background-color', '');
+                    var dayName = diffCell.attr('id').split('.').pop().replace('_diff','');
+                    var fillButtons = $('span[id*="' + dayName + '"] > .fillDayBtn');
+                    fillButtons.hide();
 
                     var timmiHours = parseFloat(e.originalEvent.data.totalHours);
 
@@ -1097,6 +1103,7 @@
                         else {
                             diffCell.attr('title', 'You have ' + diff.toFixed(2) + ' hours more in ESS compared to Timmi');
                         }
+                        fillButtons.show();
                     }
                 }
             });
@@ -1137,7 +1144,6 @@
         btn.css('margin-left', '5px');
         btn.css('cursor', 'pointer');
         btn.css('vertical-align','middle');
-        btn.css('display', 'inline');
         btn.attr('title', 'fill / remove the remaining hours from Timmi here');
 
         btn.click(function() {
@@ -1248,7 +1254,7 @@
             return;
         }
 
-        $('span:contains("Total per day")').text('Total per day ESS');
+        $('span:contains("Total per day")').text('Total per day ESS').css('padding-right','10px');
         var essHoursRow = $('span:contains("Total per day ESS")').parent().parent();
         essHoursRow.attr('id', 'ess_row');
 
