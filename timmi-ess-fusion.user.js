@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.58
+// @version      0.6.59
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -1120,8 +1120,9 @@
         $('span[weekTitle]').each(function(){
             if ($(this).text().indexOf(secondLastWorkday.format('DD.MM.YYYY')) != -1){
                 $(this).css('background-color','lightyellow');
+                $(this).css('border-radius','5px');
                 var text = secondLastWorkday.format('dddd DD.MM.YYYY') + ' is the second last working day of ' + secondLastWorkday.format('MMMM') + '. You should fill out and release the whole month no later than ' + secondLastWorkday.format('dddd') + '.';
-                $(this).closest('table').before($('<span style="background-color:lightyellow;padding:5px;font-size:12px;">' + text + '</span>'));
+                $(this).closest('table').before($('<span style="background-color:lightyellow;padding:5px;font-size:12px;border-radius:5px;">' + text + '</span>'));
             }
         });
     }
@@ -1322,6 +1323,7 @@
             case 5:
                 return endOfMonth.subtract(1, 'days');
             case 6:
+                return endOfMonth.subtract(2, 'days');
             case 7:
                 return endOfMonth.subtract(3, 'days');
         }
