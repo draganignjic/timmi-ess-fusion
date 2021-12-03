@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.59
+// @version      0.6.60
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -52,7 +52,6 @@
         enableDotDecimalEntry();
         enableEnterKeySave();
         addTopRightLinks();
-        removeTargetHours();
         fixWbsOverviewLayout();
         await addFavouritesFeature();
         calculateDiffsOnChange();
@@ -397,12 +396,6 @@
 
     async function getFavourite(key) {
         return await GM.getValue('ess_favourite_' + key);
-    }
-
-    function removeTargetHours() {
-        // because ESS has just as fixed 8.4 Target hour which is wrong for parttime employees
-        // do not remove() but hide() because remove breaks save logic
-        $('input[id="timesheet_tsdurationdata[1].mondhours"]').closest('tr').hide();
     }
 
     function isWorkdayInputField(element){
