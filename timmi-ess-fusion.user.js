@@ -603,7 +603,7 @@
         body.css('padding','20px');
         body.append($('<div style="padding-bottom:20px;">Your browser is blocking ESS Cookies. Please allow them:</div>'));
         var isFirefox = typeof InstallTrigger !== 'undefined';
-        var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+        var isChrome = /Chrome/.test(navigator.userAgent) && /Google/.test(navigator.vendor);
         if (isFirefox) {
             body.append($('<img src="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-firefox.png"/>'));
         }
