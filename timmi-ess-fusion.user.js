@@ -84,8 +84,15 @@
 
     function makeModernEssCompact() {
 
+        if (!isInIframe()) {
+            return;
+        }
+
         $('div').css('min-width', 0);
         $('footer span').css('word-break', 'break-word');
+        $('span:contains("start by using one of the options.")').closest('div').hide();
+        $('.MuiPaper-elevation1').css('width', '280px');
+        $('span:contains("Copy last week")').css('width', '80px');
 
         setTimeout(makeModernEssCompact, 1000);
     }
