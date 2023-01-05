@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.2
+// @version      0.7.3
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -116,48 +116,53 @@
 
     function fixTimmiLayout() {
 
+        $('#timmi-compact-style').remove();
+
+
+        setTimeout(fixTimmiLayout,1000);
+
         if (isBigScreen()){
             return;
         }
 
-        setTimeout(function() {
-            fixTimmiLayout();
-        },1000);
-
-
         if ($('#loginBtn').text() === 'ESS') {
-
-
-            // $('.time-entry-separator').css('margin','0 28px 0 0');
-            // $('.leave').css('margin-left','63px');
-            // $('.title').css('margin-left',0);
-            // $('timesheet')
-            //     .css('margin-left','')
-            //     .css('z-index','auto');
-            // $('timesheet-header').css('margin-left','');
-            // $('#main-navigation').show();
-            // $('.recap').css('width','168px');
-            // $('.details').css('padding-left',0);
-            // $('day-attendance').css('margin-left','');
-            // $('day-attendance > .details').css('margin-left','');
-            // $('week-header').parent().css('width','1699px');
-
             return;
         }
 
-        $('.time-entry-separator').css('margin','5px');
-        $('.leave').css('margin-left','44px');
-        $('.title').css('margin-left',0);
-        $('timesheet')
-            .css('margin-left','-140px')
-            .css('z-index','100');
-        $('timesheet-header').css('margin-left','50px');
-        $('#main-navigation').hide();
-        $('.recap').css('width','150px');
-        $('.details').css('padding-left',0);
-        $('day-attendance').css('margin-left','-10px');
-        $('day-attendance > .details').css('margin-left','-60px');
-        $('week-header').parent().css('width','680px');
+        $('body').append($(`<style id="timmi-compact-style">
+.time-entry-separator {
+margin: 5px!important;
+}
+.leave {
+margin-left: 44px!important;
+}
+.title {
+margin-left: 0!important;
+}
+timesheet {
+margin-left: -140px!important;
+z-index: 100!important;
+}
+timesheet-header {
+margin-left: 50px!important;
+}
+#main-navigation {
+visibility: hidden;
+}
+.recap {
+width: 150px!important;
+}
+.details {
+padding-left: 0!important;
+}
+day-attendance {
+margin-left: -10px!important;
+}
+day-attendance > .details {
+margin-left: -60px!important;
+}
+
+                           </style>`));
     }
 
     function calculateDiffsOnChange() {
