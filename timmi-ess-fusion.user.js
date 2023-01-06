@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.3
+// @version      0.7.4
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -116,53 +116,19 @@
 
     function fixTimmiLayout() {
 
-        $('#timmi-compact-style').remove();
+        $('body').append($(`
+<style id="timmi-compact-style">
 
+    week-attendance {
+        max-width: calc(50% + 100px)!important;
+        margin-left: -150px!important;
+        z-index: 100;
+    }
+    #main-navigation {
+        background-color: white!important;
+    }
 
-        setTimeout(fixTimmiLayout,1000);
-
-        if (isBigScreen()){
-            return;
-        }
-
-        if ($('#loginBtn').text() === 'ESS') {
-            return;
-        }
-
-        $('body').append($(`<style id="timmi-compact-style">
-.time-entry-separator {
-margin: 5px!important;
-}
-.leave {
-margin-left: 44px!important;
-}
-.title {
-margin-left: 0!important;
-}
-timesheet {
-margin-left: -140px!important;
-z-index: 100!important;
-}
-timesheet-header {
-margin-left: 50px!important;
-}
-#main-navigation {
-visibility: hidden;
-}
-.recap {
-width: 150px!important;
-}
-.details {
-padding-left: 0!important;
-}
-day-attendance {
-margin-left: -10px!important;
-}
-day-attendance > .details {
-margin-left: -60px!important;
-}
-
-                           </style>`));
+</style>`));
     }
 
     function calculateDiffsOnChange() {
@@ -756,11 +722,6 @@ margin-left: -60px!important;
             .css('cursor','pointer');
     }
 
-    function isBigScreen() {
-
-        return $(window).width() > 1800;
-    }
-
     function minimizeEssFrame() {
 
         var essIframe = $('#essIframe');
@@ -769,23 +730,12 @@ margin-left: -60px!important;
             .css('position','fixed')
             .css('z-index','100')
             .css('border','1px solid gray')
-            .css('border-radius','10px');
-            //.css('background-color','#66A3C7');
+            .css('border-radius','10px')
+            .css('top','288px')
+            .css('left','calc(50% - 5px)')
+            .css('width','50%')
+            .css('height','calc(100% - 293px)');
 
-        if (isBigScreen()){
-            essIframe
-                .css('top','300px')
-                .css('left','calc(50% - 5px)')
-                .css('width','50%')
-                .css('height','calc(100% - 305px)');
-        }
-        else {
-            essIframe
-                .css('top','300px')
-                .css('left','660px')
-                .css('width','calc(100% - 655px)')
-                .css('height','calc(100% - 305px)');
-        }
         $('#oldNewEssBtn').show();
     }
 
