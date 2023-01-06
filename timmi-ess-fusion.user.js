@@ -644,7 +644,7 @@
             .css('font-size','12px')
             .css('text-decoration', 'none');
 
-        var loginBtn = $('<button id="loginBtn">ESS</button>');
+        var loginBtn = $('<button id="loginBtn">Hide</button>');
         $('body').append(loginBtn);
         setButtonStyle(loginBtn);
         loginBtn
@@ -729,12 +729,11 @@
             .attr('maximized','false')
             .css('position','fixed')
             .css('z-index','100')
-            .css('border','1px solid gray')
-            .css('border-radius','10px')
-            .css('top','288px')
+            .css('border','0')
+            .css('top','335px')
             .css('left','calc(50% - 5px)')
             .css('width','50%')
-            .css('height','calc(100% - 293px)');
+            .css('height','calc(100% - 340px)');
 
         $('#oldNewEssBtn').show();
     }
