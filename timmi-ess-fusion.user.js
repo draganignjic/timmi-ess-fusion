@@ -69,6 +69,7 @@
         calculateDiffsOnChange();
         addWeekButtons();
         addEndOfMonthWarning();
+        sendActivitySignal();
     }
 
     if (window.location.href.indexOf('/sap/flp') !== -1 && window.location.href.indexOf('#Timesheet-entry') !== -1) {
@@ -474,7 +475,7 @@
                     return;
                 }
                 var essIframe = $('#essIframe');
-                essIframe.attr('src', _modernEssStartUrl.replace('?', '?reload&'));
+                essIframe.attr('src', (await getStartUrl()).replace('?', '?reload&'));
                 window.focus();
 
                 if (_loginWindow) {
@@ -634,11 +635,12 @@
 
         var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
         var helpBtn = $('<a href="' + atob(emailHiddenFromWebCrawler) + '">Help</a>');
+        helpBtn.attr('title', 'If you cannot login try (1) restarting your browser or (2) activating third party cookies in your browser setting or (3) login into the www.corp.worldline.com portal in another browser tab. If nothing helps, contact me in MS Teams by clicking on this link.');
         $('body').append(helpBtn);
         helpBtn
             .css('position','fixed')
             .css('bottom','17px')
-            .css('right','110px')
+            .css('right','220px')
             .css('z-index','100')
             .css('font-family','arial')
             .css('font-size','12px')
@@ -656,13 +658,42 @@
             .css('z-index','100')
             .css('padding','0');
 
-        loginBtn.click(async function() {
+        var oldLoginBtn = $('<button id="oldLoginBtn">old ESS</button>');
+        $('body').append(oldLoginBtn);
+        setButtonStyle(oldLoginBtn);
+        oldLoginBtn
+            .css('position','fixed')
+            .css('bottom','15px')
+            .css('right','120px')
+            .css('width','80px')
+            .css('height','20px')
+            .css('z-index','100')
+            .css('padding','0')
+            .css('background-color', 'lightgray')
+            .css('color', 'black');
+
+        oldLoginBtn.click(async function(e) {
+            if ($(this).text() == 'old ESS') {
+                GM.setValue('ess_sessionUrl','');
+                openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
+                $(this).text('new ESS');
+            }
+            else {
+                GM.setValue('ess_sessionUrl','');
+                openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
+                $(this).text('old ESS');
+            }
+
+            loginBtn.text($(this).text() === 'Hide' ? 'ESS' : 'Hide');
+        });
+
+        loginBtn.click(async function(e) {
             if ($(this).text() === 'Hide') {
                 essIframe.hide();
             }
             else if (!isEssActive()) {
                 GM.setValue('ess_sessionUrl','');
-                openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login',400, 750);
+                openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
             }
 
             $(this).text($(this).text() === 'Hide' ? 'ESS' : 'Hide');
@@ -678,10 +709,6 @@
                     essIframe.show();
                 }
                 _lastEssActivitySignal = new Date();
-
-                if (_loginWindow) {
-                    _loginWindow.close();
-                }
             }
             if (e.originalEvent.data.cookiesNeedtoBeActivated) {
                 essIframe.show();
