@@ -1535,7 +1535,7 @@
     function sendActivitySignal() {
 
         window.parent.postMessage({
-            essIsActive : isTimeEntryDisplayed()
+            essIsActive : isTimeEntryDisplayed() || isWbsOverviewDisplayed()
         }, '*');
 
         setTimeout(sendActivitySignal, 100);
