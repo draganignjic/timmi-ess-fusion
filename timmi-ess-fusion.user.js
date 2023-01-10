@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.4
+// @version      0.7.5
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -633,18 +633,7 @@
         $('body').append(essIframe);
         minimizeEssFrame();
 
-        var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
-        var helpBtn = $('<a href="' + atob(emailHiddenFromWebCrawler) + '">Help</a>');
-        helpBtn.attr('title', 'If you cannot login try (1) restarting your browser or (2) activating third party cookies in your browser setting or (3) login into the www.corp.worldline.com portal in another browser tab. If nothing helps, contact me in MS Teams by clicking on this link.');
-        $('body').append(helpBtn);
-        helpBtn
-            .css('position','fixed')
-            .css('bottom','17px')
-            .css('right','220px')
-            .css('z-index','100')
-            .css('font-family','arial')
-            .css('font-size','12px')
-            .css('text-decoration', 'none');
+        appendHelpBox();
 
         var loginBtn = $('<button id="loginBtn">Hide</button>');
         $('body').append(loginBtn);
@@ -716,6 +705,68 @@
         });
     }
 
+    function appendHelpBox() {
+
+        var helpBtn = $('<a href="javascript:void()">Help</a>');
+        helpBtn.click(function() {
+            $('#helpBox').toggle();
+        });
+        $('body').append(helpBtn);
+        helpBtn
+            .css('position','fixed')
+            .css('bottom','17px')
+            .css('right','220px')
+            .css('z-index','100')
+            .css('font-family','arial')
+            .css('font-size','14px')
+            .css('text-decoration', 'none');
+
+        var helpBox = $(`<div id="helpBox">
+        <b>Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br><br>
+
+        If you cannot login try following <br>
+        <ul>
+            <li style="margin-bottom:10px">Restart your Browser.</li>
+            <li style="margin-bottom:10px">Activate third party cookies in your
+            <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-chrome.png" target="_blank">Chrome</a> or
+            <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-firefox.png" target="_blank">Firefox</a> setting.</li>
+            <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
+        </ul>
+        <br>
+        If you still cannot login, contact the Support in MS Teams
+        </div>`);
+        $('body').append(helpBox);
+        helpBox
+            .css('background-color', 'white')
+            .css('border', '1px solid gray')
+            .css('position', 'fixed')
+            .css('bottom', '50px')
+            .css('right', '220px')
+            .css('width', '550px')
+            .css('height', '180px')
+            .css('z-index', 1000)
+            .css('font-family', 'arial')
+            .css('font-size', '14px')
+            .css('padding', '10px');
+        helpBox.hide();
+
+        $('#closeHelpBtn').click(function() {
+            helpBox.hide();
+        });
+
+        var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
+        helpBox.append($('<a href="' + atob(emailHiddenFromWebCrawler) + '">here</a>'));
+
+        setTimeout(function() {
+            var specialUser = 'R0lSQUxETyBPVkFMTEUgR0lOTkE=';
+            //specialUser = 'SUdOSklDIERSQUdBTg==';
+            if ($('span:contains("' + atob(specialUser) + '")').length > 0) {
+                var cheesyMessage = "RHJhZ2FuIExvdmVzIFlvdQ==";
+                $('body').append('<div style="position:fixed;top:10px;left:50%;z-index:10000;font-family:arial;color:gray;">' + atob(cheesyMessage) + ' <span style="color:red;font-size:20px;font-style: normal">&#10084;</span></div>');
+            }
+        }, 1000);
+    }
+
     function isEssActive() {
         return (_lastEssActivitySignal && (new Date() - _lastEssActivitySignal)/ 1000 < 1);
     }
@@ -757,10 +808,10 @@
             .css('position','fixed')
             .css('z-index','100')
             .css('border','0')
-            .css('top','335px')
+            .css('top','289px')
             .css('left','calc(50% - 5px)')
             .css('width','50%')
-            .css('height','calc(100% - 340px)');
+            .css('height','calc(100% - 294px)');
 
         $('#oldNewEssBtn').show();
     }
