@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.6.60
+// @version      0.7.5
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
 // @include      /sps.ilucca.ch/timmi
+// @include      /sap/
 // @grant        GM.getValue
 // @grant        GM.setValue
 // @grant        GM_addValueChangeListener
@@ -20,27 +21,38 @@
     let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
     let _essLoginUrl = "https://www.corp.worldline.com//irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1578481318556&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet%20entry&NavMode=10";
     let _essLegacyLoginUrl = "https://www.corp.worldline.com/irj/portal?NavigationTarget=navurl%3A%2F%2F84bc02facde559823f00891e66f3af77&atosStandaloneContent=yes&CurrentWindowId=WID1580893319809&supportInitialNavNodesFilter=true&filterViewIdList=%3BAtosEndUser%3B&PrevNavTarget=navurl%3A%2F%2F7eb1a7e6f0945a01676a229d623d6c8f&TarTitle=Timesheet entry&NavMode=10";
-    let _essStartUrl = "https://perf.corp.worldline.com/sap(ZT16N2x3UWs5WFNRYU8xWHlDOU5fcU13LS1USHhuanBBcmVRYnE3MEg5RjlvWUJRLS0=)/bc/bsp/sap/ZCA_TIMESHEET/ZCA_TIMESHEET_STD.do";
+    let _essStartUrl = "https://perf.corp.worldline.com/sap(ZT16N2x3UWs5WFNRYU8xWHlDOU5fcU13LS1USHhuanBBcmVRYnE3MEg5RjlvWUJRLS0=)/bc/bsp/sap/ZCA_TIMESHEET/timeout.html";
     let _saferpayLogo = "data:image/png;base64,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";
     let _wbsLookupLink = 'https://confluence.worldline.com/display/SFRP/WBS+Lookup';
     let _autmatixWbsLookupLink = "https://confluence.worldline.com/display/SFRP/Automatix+ESS"
     let _faviconEmpty = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAN9SURBVDhPhVRbTxNBFJ6ZbbeCaIioiKAmBgxovYD6YEAxiBTDJQFsxRA0+uqDJr7rkyb+Ai8PitGYIC03tV4iEYJIRETUeEFQC0FQQWICoaXd7vidlVWoTfzS0z23+c7MzjnLHQ6H4ICUkuHBCKQTyN6dnakmrUprg6mMf/XtevDoacCMESLXGWTRIMTvUGLy2kqkbYdkJSxfVTk3FgVMEGtkFVOPj1OZEMoJeL8aIpTj8YtsRowQuY6ESkUlIxQ49uUjZROT4fOQC4yJjY7CfXsoFklm8gjDA0SSGbZFpd1N+6d+XoRcgu7ninoiGpmJf45MINtVUbIB4QIm9evN3pYfkDHoN+BzOMuLM8y8fzZx8li1NX3D5iRFjV3DuQUi1iALIrJxlxnazORGT6O3jxbsLytar6hxvVj6BuQdePqkrg9JGR7UApODvS97v/GrNZdf4z3ZjRJ/IMP4G8Wia7U33acMz+xuDrgqzqBYFYqtgCgUM8GZ3sNraq7gBnkil9olPazV6VpgaHT403DH8/7gbN68o5l6zrY0K1oqWbHYVgvFelhyyyHO5IiQWqAIaRNwuHQpf9Y13vv0PzLC4+7+kLvxng+bXIC1TkRHtKC/UJkJhr9npKe1ot+qhWKpSl+Xevfd+76xSIK5OoHsSmdZMVdsblgTocBUvrvh9nujbdyepu5waKYEqs2iLnhQUVaS/j+yA7hqpthqYX0nsvombz/F/rSNu76pU9eIlMdZ1Jj7ZaUOvPToZK6KUjv6kchGg/6pPJOMYOzQXFDnaWpnunYOnpWqLdYejYxs/BbBVJkevtDQ7P1sxkiM0TNBDrTEVmjTE2MjT8xY/q6smLyczBjT7nv7qgs5PzDoDrL/FooYvb2522PgzYfR8rCta3r1ygSOd3U0ISnVtyw57TPpKSuW8N63vjBy7uOA2UUFO+Pnbmre6C1ZnpKHLcair285y0vsO3Ly2piwXkS5ceSOk56du6fVWV5ql7rmhc+6cPHSAoMJIJ55XxsuLHTTZOcKa+wzKJkgPz0yNJD1ZfDDVia109hDJsa0C99E46uDNejjv8eO/NoY1dCoVRijFrTDFoze2fbOFzMktTc9Z0OByS0YyRbkHKFccBSaZATzyAZgv8b4+JgePNjQUF/kabwzQH5d1ylm5MD30eOuK0aOC0UH4O8xY1JK9guqLwHJVyxq0wAAAABJRU5ErkJggg==";
     let _faviconFull = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAOSSURBVDhPhVRdbBNHEJ7du3PsYNP8kNIAaZBIAxGIgEARqCmEKqGmhkaNRF6qvlXqY92Xoko8IqG88MpDpYoKBYu6/KRWkYCgqCEISFWaFqmlaX5w5DQ0VogDzuV8vttlZu2jSeSWTxrd7OzOtzOzM8cAEQ6HmZSSM6aWgLr60jqyr8ao2Nw6gCuenb5/6OpgKuftEejscp0jGRGRrADnBVPFmy3dLpTtc8HXEqzd3b18rwSAIytFpxbeLZ5eFbBAcn90jTEHJJKXRSsDttojrI6ORKVZioxw5P2jhwQYu5uqb0JTdT+g3hyJHG2jvdVkHg9XFsRqMlpLLRQ1uAVvVQ6i/AikCy0YLUXmgVIuSfZxV9s2lxlHGpDMp5lKGiqHQKDtow8PNnrnVvuxLz85oG/ftX89lNXUC+6vB6ajsHrJtFa8b0dX4wkI+tLK4bn9OlwZ7QEG7m8g3SGQ4jGTzhQIO8mtVPLe8EianT/31YiLtVEeRWjMUY+wBSPaWZMoWgv4dbYTxjNvg5mvAlfqRWsBGtg/sW/Off03vk3tjnXXZN3aByyIRAEjg1EUevG/gMmB5bwGWbtaTmT2w6On7YyDm+K6Mx/BFOb+mn+HUZ3KjflXkhHoTEDPYJQGG8u0YiXdaWkvhDXT5umdW+sGXBY6nnzW4q8L/QJlerbo9v+YyW6HW1OfgxB6ilkzHbErA6OqbWKXbzzg+fmI5QSfX398QhX/VVBkyc+IbIpZs+2xvjtjZH/ZNhcu9w9rztNjS/mKxRuTX0DODSrHUniWewPJoujHJ5mZejfWNzhe3Co0ttdLvZdu3eHCPJ3Nr4OMtVHZSiEv/FQ7YCJ3Npa4mySbF5gaPQ/KyIw9Bl+CmvKXl4KQmhIPVYGkehDJfYdpTX7EQ7Ji9DpbN/gl0zs2hh7iTY6yU0t89+cZJaQT6IU3hbC3QTtwvL1x7fKgVoxeqLa5DYMO0ksvYJ2olrdTn0LOKX+Uc9b8QTrZqIabQiNIyH1GRUNHkevflL0bcPSO0TdtbpGJsVPwZHHbki7Nk+nJ+3tmJ+7t1YR58slik/k97v2zuFUy/P/gLy1CPl5QK1IGpqmaUNfjnF6DpZnm3m8TPf3D03b/cMq+EE/0cGu6GYT7w+9z7zGMh1407JERvJQVaOg5OOO6u9Adj8c/iPXdniC7EIJGR53pvTo0eTF+qdMQC10c8qMY5c/enpQSXgBz0OfpwrqkcAAAAABJRU5ErkJggg==";
+    let _modernEssStartUrl = "https://www.corp.worldline.com/sap/ur?sap-ushell-config=headerless#Timesheet-entry";
+    let _modernEssLoginUrl = "https://www.corp.worldline.com/irj/portal?NavigationTarget=navurl%3A%2F%2Fbaff536bcf44bbeff1a64b8649c78372&NavMode=10";
 
-    if (scriptAlreadyExecuted()){
+    let _lastEssActivitySignal = null;
+
+    if (scriptAlreadyExecuted()) {
         // some users have it installed twice
         return;
     }
 
-    if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('/login') == -1){
+    if (window.location.href.indexOf('/timmi') !== -1 && window.location.href.indexOf('/login') == -1 && window.location.href.indexOf('/timmi-absences') == -1) {
+        if (isInIframe()) {
+            // timmi has iframes which we don't want to run ess in
+            return;
+        }
+
         await appendEss();
         collectTimmiHours();
         fixTimmiLayout();
+        await listenForNewSession();
+        closeInactiveEss();
     }
 
     await sessionHandling();
 
-    if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
+    if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1) {
         fixLayout();
         addFillButtons();
         formatDayTitles();
@@ -57,9 +69,44 @@
         calculateDiffsOnChange();
         addWeekButtons();
         addEndOfMonthWarning();
+        sendActivitySignal();
     }
 
-    function scriptAlreadyExecuted(){
+    if (window.location.href.indexOf('/sap/flp') !== -1 && window.location.href.indexOf('#Timesheet-entry') !== -1) {
+        listenForTimmiHoursModernEss();
+        keepSessionOpen();
+        sendActivitySignal();
+        changeShowWeekendDefault();
+        addEndOfMonthWarningModernEss();
+        addFillButtonsModernEss();
+        enableEnterKeySave();
+        makeModernEssCompact();
+    }
+
+    function makeModernEssCompact() {
+
+        if (!isInIframe()) {
+            return;
+        }
+
+        $('div').css('min-width', 0);
+        $('footer span').css('word-break', 'break-word');
+        $('span:contains("start by using one of the options.")').closest('div').hide();
+        $('main > div > div > div > .MuiPaper-elevation1').css('width', '30%');
+        $('span:contains("Copy last week")').css('width', '80px');
+
+        setTimeout(makeModernEssCompact, 500);
+    }
+
+    function changeShowWeekendDefault() {
+
+        if (!getCookie('showWeekends')) {
+            setCookie('showWeekends', 'false;SameSite=None;Secure');
+        }
+    }
+
+    function scriptAlreadyExecuted() {
+
         var duplicateExecutionId = 'timmi-ess-fusion-prevent-duplicate-execution';
         if ($('#' + duplicateExecutionId).length != 0){
             return true;
@@ -68,30 +115,25 @@
         return false;
     }
 
-    function fixTimmiLayout(){
-        if (isBigScreen()){
-            return;
-        }
+    function fixTimmiLayout() {
 
-        setTimeout(function() {
-            $('.time-entry-separator').css('margin','5px');
-            $('.leave').css('margin-left','44px');
+        $('body').append($(`
+<style id="timmi-compact-style">
 
-            $('.title').css('margin-left',0);
-            $('timesheet')
-                .css('margin-left','-140px')
-                .css('z-index','100');
-            $('timesheet-header').css('margin-left','50px');
-            $('#main-navigation').hide();
-            $('.recap').css('width','150px');
-            $('.details').css('padding-left',0);
-            $('day-attendance').css('margin-left','-10px');
-            $('day-attendance > .details').css('margin-left','-60px');
-            fixTimmiLayout();
-        },1000);
+    week-attendance {
+        max-width: calc(50% + 100px)!important;
+        margin-left: -150px!important;
+        z-index: 100;
+    }
+    #main-navigation {
+        background-color: white!important;
     }
 
-    function calculateDiffsOnChange(){
+</style>`));
+    }
+
+    function calculateDiffsOnChange() {
+
         $('input').change(function(){
             if (isWorkdayInputField($(this))){
                 $(this).css('font-weight','bold');
@@ -112,6 +154,7 @@
     }
 
     function calculateDiffForDay(element) {
+
         var id = element.attr('id');
         var blurEvent = $('script[for="' + id + '"][event="onblur"]');
         if (blurEvent.length === 1){
@@ -128,7 +171,8 @@
         $('input[id="timesheet_tsdurationdata[2].' + idSuffix + '"]').val(totalEssDayHours.toFixed(2).replace('.',','));
     }
 
-    function fixWbsOverviewLayout(){
+    function fixWbsOverviewLayout() {
+
         if (!isWbsOverviewDisplayed()){
             return;
         }
@@ -245,7 +289,8 @@
         descField.attr('onfocus',"sapUrMapi_InputField_focus('s_description',event)");
     }
 
-    async function addFavouritesFeature(){
+    async function addFavouritesFeature() {
+
         $('#worklistIcon').css('vertical-align','middle');
 
         var favouriteBtn = $('<img style="width:20px;height:20px;vertical-align:middle;cursor:pointer;" src="' + _faviconFull + '"/>')
@@ -257,7 +302,8 @@
         await refreshFavourites();
     }
 
-    async function refreshFavourites(){
+    async function refreshFavourites() {
+
         var itemTitleCell = null;
         if ($('#TSFormWorklist').length == 1){
             itemTitleCell = $('.tier1,.tier2').parent().next();
@@ -332,6 +378,7 @@
     }
 
     async function addFavouritesOverview(){
+
         $('#favouritesTable').remove();
         var favouritesTable = $('<table id="favouritesTable" style="border:1px solid gray;padding:10px;border-collapse: collapse;" cellspacing="0"></table>"');
         favouritesTable.append($('<tr><td colspan="4" style="padding:5px;background-color:lightblue;vertical-align:middle;"><img style="width:15px;height:15px;vertical-align:middle;" src="' + _faviconFull + '"/> <span>Favourites</span></td></tr>'));
@@ -387,18 +434,22 @@
     }
 
     function deleteFavourite(key) {
+
         GM.setValue('ess_favourite_' + key, '');
     }
 
     function saveFavourite(key, newTitle) {
+
         GM.setValue('ess_favourite_' + key, newTitle);
     }
 
     async function getFavourite(key) {
+
         return await GM.getValue('ess_favourite_' + key);
     }
 
-    function isWorkdayInputField(element){
+    function isWorkdayInputField(element) {
+
         if (!element.attr('id')){
             return false;
         }
@@ -416,92 +467,114 @@
     }
 
     async function listenForNewSession(){
-        GM_addValueChangeListener('ess_sessionUrl', function(name, old_value, newSession, remote) {
-            if (newSession){
+
+        GM_addValueChangeListener('ess_sessionUrl', async function(name, old_value, newSession, remote) {
+            if (newSession) {
+                if (old_value) {
+                    // just reload after login. avoid endless reloads.
+                    return;
+                }
+                var essIframe = $('#essIframe');
+                essIframe.attr('src', (await getStartUrl()).replace('?', '?reload&'));
                 window.focus();
-                window.parent.postMessage({
-                    loggedIn : true
-                }, '*');
-                window.location.href = newSession;
+
+                if (_loginWindow) {
+                    _loginWindow.close();
+                }
             }
         });
     }
 
-    async function sessionHandling(){
-        if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1){
+    async function sessionHandling() {
+
+        if (window.location.href.indexOf('ZCA_TIMESHEET') !== -1 || window.location.href.indexOf('/sap/') !== -1) {
             $('body').append($('<div><img src="https://qa.saferpay.com/userscripts/timmi-ess-fusion-saferpay-logo.png?cachebusting=' + moment(new Date()).format("YYYY-MM-DD") + '"/></div>').hide());
 
+            if (areCookiesBlocked()) {
+                showAllowCookiesMessage();
+
+                window.parent.postMessage({
+                    cookiesNeedtoBeActivated : true
+                }, '*');
+            }
             if (isSessionTimedOut()) {
-                var body = $('body');
-                body
-                    .empty()
-                    .css('background-color','slategray')
-                    .css('display','flex')
-                    .css('margin','5px')
-                    .css('justify-content','center');
-
-                var loginBox = $('<div></div>');
-                $('body').append(loginBox);
-                loginBox
-                    .css('width','300px')
-                    .css('height','260px')
-                    .css('padding','5px')
-                    .css('font-family','arial')
-                    .css('font-size','25px')
-                    .css('background-color','white')
-                    .css('text-align','center')
-                    .css('border-radius','5px');
-
-                loginBox.append($('<div style="background-color:lightblue;border-radius:5px;padding:5px;">Timmi ESS Fusion</div>'));
-                loginBox.append('<img style="margin:10px;" src="' + _saferpayLogo + '"/>');
-                var redirectLoginBox = $('<a href="#">Login</<a>');
-                redirectLoginBox
-                    .css('text-decoration','none')
-                    .css('color','white')
-                    .css('margin','20px')
-                    .css('padding','10px 40px')
-                    .css('background-color','#0066a1')
-                    .css('display','inline-block')
-                    .css('border-radius','10px');
-                loginBox.append(redirectLoginBox);
-
-                redirectLoginBox.click(async function(){
-                    GM.setValue('ess_sessionUrl','');
-                    openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login',400, 750);
-                    await listenForNewSession();
-                });
+                $('body').empty()
 
                 window.parent.postMessage({
                     loginRequired : true
                 }, '*');
             }
             else if (isTimeEntryDisplayed()) {
+
                 GM.setValue('ess_sessionUrl', window.location.href);
 
+                if (isLegacyTimeEntryDisplayed()) {
+                    GM.setValue('legacyEss_sessionUrl', window.location.href);
+                }
+
                 // have to set additional properties on cookie so chrmoe does not block it in iframe
+
                 var sessionCookie = getCookie('SAP_SESSIONID_P01_360');
                 if (sessionCookie){
-                    setCookie('SAP_SESSIONID_P01_360',  sessionCookie+ ';SameSite=None;Secure');
+                    setCookie('SAP_SESSIONID_P01_360', sessionCookie+ ';SameSite=None;Secure');
                 }
 
-                window.parent.postMessage({
-                    hideAlternativeLogin: true
-                }, '*');
+                var sessionCookie2 = getCookie('SAP_SESSIONID_FP1_360');
+                if (sessionCookie2){
+                    setCookie('SAP_SESSIONID_FP1_360', sessionCookie2+ ';SameSite=None;Secure');
+                }
 
-                try {
-                    if (window.parent.location.href.indexOf('closeAfterLogin') !== -1) {
-                        top.location.href = document.location.href + '&closeAfterLogin';
-                        window.close();
-                    }
-                }
-                catch(ex) {
-                    // cannot get top location for redirect
-                }
+                setCookie('CookiesAllowedTest_Lax','true;SameSite=Lax;Secure');
+                setCookie('CookiesAllowedTest_None','true;SameSite=None;Secure');
             }
         }
     }
 
+    function areCookiesBlocked() {
+
+        setCookie('CookiesAllowedTest_Any','true;SameSite=None;Secure');
+        if (!document.cookie) {
+            // browser blocks ALL third party cookies
+            return true;
+        }
+
+        if (getCookie('CookiesAllowedTest_None') != 'true') {
+            // user did not login yet
+            return false;
+        }
+
+        return areThirdPartyCookiesBlocked();
+    }
+
+    function areThirdPartyCookiesBlocked() {
+
+        if (document.cookie.indexOf('SAP_SESSIONID') == -1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function showAllowCookiesMessage() {
+
+        var body = $('body');
+        body.empty();
+        body.css('padding','20px');
+        body.append($('<div style="padding-bottom:20px;">Your browser is blocking ESS Cookies. Please allow them:</div>'));
+        var isFirefox = typeof InstallTrigger !== 'undefined';
+        var isChrome = /Chrome/.test(navigator.userAgent) && /Google/.test(navigator.vendor);
+        if (isFirefox) {
+            body.append($('<img src="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-firefox.png"/>'));
+        }
+        else if (isChrome) {
+            body.append($('<img src="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-chrome.png"/>'));
+        }
+    }
+
+    let _loginWindow = null;
+
     function openPopup(url, title, w, h) {
+
         // Fixes dual-screen position                             Most browsers      Firefox
         const dualScreenLeft = window.screenLeft !==  undefined ? window.screenLeft : window.screenX;
         const dualScreenTop = window.screenTop !==  undefined   ? window.screenTop  : window.screenY;
@@ -515,53 +588,57 @@
         const newWindow = window.open(url, title,`scrollbars=yes,width=${w / systemZoom},height=${h / systemZoom},top=${top},left=${left}`);
 
         if (window.focus) newWindow.focus();
+
+        _loginWindow = newWindow;
     }
 
-    function isWbsOverviewDisplayed(){
+    function isWbsOverviewDisplayed() {
+
         return $('#WLSelectButton').length == 1;
     }
 
-    function isTimeEntryDisplayed(){
+    function isTimeEntryDisplayed() {
+
+        return isLegacyTimeEntryDisplayed() || isModernTimeEntryDisplayed();
+    }
+
+    function isModernTimeEntryDisplayed() {
+
+        return $('#sap-ui-static').length != 0;
+    }
+
+    function isLegacyTimeEntryDisplayed() {
+
         return $('input[id="timesheet_tsdurationdata[2].mondhours"]').length != 0;
     }
 
-    async function appendEss(){
-        var url = await GM.getValue('ess_sessionUrl') || _essStartUrl;
+    async function getStartUrl() {
 
-        var essIframe = $('<iframe id="essIframe" maximized="false" src="' + url + '"/>');
+        var sessionUrl = await GM.getValue('ess_sessionUrl');
+
+        var startUrl = sessionUrl || _modernEssStartUrl;
+
+        if (startUrl.indexOf('ZCA_TIMESHEET') == -1) {
+            // need to redirect because other Url does not work when refreshing page
+            startUrl = _modernEssStartUrl;
+        }
+
+        return startUrl;
+    }
+
+    async function appendEss() {
+
+        var essIframe = $('<iframe id="essIframe" maximized="false" src="' + await getStartUrl() + '"/>');
+        essIframe.hide();
         $('body').append(essIframe);
         minimizeEssFrame();
 
-        var checkForUpdatesBox = $('<div></div>');
-        checkForUpdatesBox.append($('<a style="color:white;text-decoration: none;" href="' + _updateUrl +'">Check for Update</a>'));
-        setButtonStyle(checkForUpdatesBox);
-        $('body').append(checkForUpdatesBox);
-        checkForUpdatesBox
-            .css('position','fixed')
-            .css('font-size','10px')
-            .css('line-height','8px')
-            .css('z-index','100')
-            .css('bottom','15px')
-            .css('right','190px')
-            .css('width','80px')
-            .css('height','8px');
+        appendHelpBox();
 
-        var minMaxEssBtn = $('<button>Maximize</button>');
-        $('body').append(minMaxEssBtn);
-        setButtonStyle(minMaxEssBtn);
-        minMaxEssBtn
-            .css('position','fixed')
-            .css('bottom','15px')
-            .css('right','105px')
-            .css('width','80px')
-            .css('height','20px')
-            .css('z-index','100')
-            .css('padding','0');
-
-        var showHideEssBtn = $('<button>Hide ESS</button>');
-        $('body').append(showHideEssBtn);
-        setButtonStyle(showHideEssBtn);
-        showHideEssBtn
+        var loginBtn = $('<button id="loginBtn">Hide</button>');
+        $('body').append(loginBtn);
+        setButtonStyle(loginBtn);
+        loginBtn
             .css('position','fixed')
             .css('bottom','15px')
             .css('right','20px')
@@ -570,74 +647,142 @@
             .css('z-index','100')
             .css('padding','0');
 
-        showHideEssBtn.click(function(){
-            essIframe.toggle();
-            checkForUpdatesBox.toggle();
-            minMaxEssBtn.toggle();
-            $('#legacyLogin').toggle();
-            $(this).text($(this).text() === 'Hide ESS' ? 'Show ESS' : 'Hide ESS');
-        });
+        var oldLoginBtn = $('<button id="oldLoginBtn">old ESS</button>');
+        $('body').append(oldLoginBtn);
+        setButtonStyle(oldLoginBtn);
+        oldLoginBtn
+            .css('position','fixed')
+            .css('bottom','15px')
+            .css('right','120px')
+            .css('width','80px')
+            .css('height','20px')
+            .css('z-index','100')
+            .css('padding','0')
+            .css('background-color', 'lightgray')
+            .css('color', 'black');
 
-        minMaxEssBtn.click(function(){
-            $(this).text($(this).text() === 'Maximize' ? 'Minimize' : 'Maximize');
-            var essIframe = $('#essIframe');
-            if (essIframe.attr('maximized') === 'true') {
-                minimizeEssFrame();
+        oldLoginBtn.click(async function(e) {
+            if ($(this).text() == 'old ESS') {
+                GM.setValue('ess_sessionUrl','');
+                openPopup(_essLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
+                $(this).text('new ESS');
             }
             else {
-                maximizeEssFrame();
+                GM.setValue('ess_sessionUrl','');
+                openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
+                $(this).text('old ESS');
             }
+
+            loginBtn.text($(this).text() === 'Hide' ? 'ESS' : 'Hide');
         });
 
-        var legacyLogin = $('<div id="legacyLogin">Alternative <a href="' + _essLoginUrl + '" target="_blank">Login</a></div>');
-        legacyLogin
-            .css('position','fixed')
-            .css('z-index','101')
-            .css('bottom','70px')
-            .css('right','0')
-            .css('width','300px')
-            .css('text-align','center')
-            .css('font-size','16px')
-            .css('font-family','arial');
-        legacyLogin.click(function(){
-            GM_addValueChangeListener('ess_sessionUrl', function(name, old_value, newSession, remote) {
-                if (newSession){
-                    window.focus();
-                    window.location.reload();
-                }
-            });
+        loginBtn.click(async function(e) {
+            if ($(this).text() === 'Hide') {
+                essIframe.hide();
+            }
+            else if (!isEssActive()) {
+                GM.setValue('ess_sessionUrl','');
+                openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
+            }
+
+            $(this).text($(this).text() === 'Hide' ? 'ESS' : 'Hide');
         });
-        $('body').append(legacyLogin);
 
         $(window).on('message', function (e) {
             if (e.originalEvent.data.loginRequired) {
-                essIframe
-                    .css('top', 'calc(100% - 289px)')
-                    .css('left', 'calc(100% - 290px)')
-                    .css('width', '276px')
-                    .css('height', '280px');
-                essIframe.attr('loginRequired', 'true');
+                essIframe.hide();
+                loginBtn.text('ESS');
             }
-            else if (e.originalEvent.data.loggedIn) {
-                minimizeEssFrame();
-                $('#legacyLogin').remove();
+            if (e.originalEvent.data.essIsActive) {
+                if (loginBtn.text() === 'Hide') {
+                    essIframe.show();
+                }
+                _lastEssActivitySignal = new Date();
             }
-            else if (e.originalEvent.data.hideAlternativeLogin) {
-                $('#legacyLogin').remove();
+            if (e.originalEvent.data.cookiesNeedtoBeActivated) {
+                essIframe.show();
             }
         });
-
-
-        // workaround to ensure that login screen is displayed.
-        // this is necessary because worldline logout-url has an invalid ssl certificate
-        setTimeout(function() {
-            if ($('#legacyLogin').length > 0 && essIframe.attr('loginRequired') != 'true'){
-                essIframe.attr('src', _essStartUrl + '/../timeout.html');
-            }
-        }, 5000);
     }
 
-    function setButtonStyle(btn){
+    function appendHelpBox() {
+
+        var helpBtn = $('<a href="javascript:void()">Help</a>');
+        helpBtn.click(function() {
+            $('#helpBox').toggle();
+        });
+        $('body').append(helpBtn);
+        helpBtn
+            .css('position','fixed')
+            .css('bottom','17px')
+            .css('right','220px')
+            .css('z-index','100')
+            .css('font-family','arial')
+            .css('font-size','14px')
+            .css('text-decoration', 'none');
+
+        var helpBox = $(`<div id="helpBox">
+        <b>Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br><br>
+
+        If you cannot login try following <br>
+        <ul>
+            <li style="margin-bottom:10px">Restart your Browser.</li>
+            <li style="margin-bottom:10px">Activate third party cookies in your
+            <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-chrome.png" target="_blank">Chrome</a> or
+            <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-firefox.png" target="_blank">Firefox</a> setting.</li>
+            <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
+        </ul>
+        <br>
+        If you still cannot login, contact the Support in MS Teams
+        </div>`);
+        $('body').append(helpBox);
+        helpBox
+            .css('background-color', 'white')
+            .css('border', '1px solid gray')
+            .css('position', 'fixed')
+            .css('bottom', '50px')
+            .css('right', '220px')
+            .css('width', '550px')
+            .css('height', '180px')
+            .css('z-index', 1000)
+            .css('font-family', 'arial')
+            .css('font-size', '14px')
+            .css('padding', '10px');
+        helpBox.hide();
+
+        $('#closeHelpBtn').click(function() {
+            helpBox.hide();
+        });
+
+        var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
+        helpBox.append($('<a href="' + atob(emailHiddenFromWebCrawler) + '">here</a>'));
+
+        setTimeout(function() {
+            var specialUser = 'R0lSQUxETyBPVkFMTEUgR0lOTkE=';
+            //specialUser = 'SUdOSklDIERSQUdBTg==';
+            if ($('span:contains("' + atob(specialUser) + '")').length > 0) {
+                var cheesyMessage = "RHJhZ2FuIExvdmVzIFlvdQ==";
+                $('body').append('<div style="position:fixed;top:10px;left:50%;z-index:10000;font-family:arial;color:gray;">' + atob(cheesyMessage) + ' <span style="color:red;font-size:20px;font-style: normal">&#10084;</span></div>');
+            }
+        }, 1000);
+    }
+
+    function isEssActive() {
+        return (_lastEssActivitySignal && (new Date() - _lastEssActivitySignal)/ 1000 < 1);
+    }
+
+    function closeInactiveEss() {
+
+        if (_lastEssActivitySignal && (new Date() - _lastEssActivitySignal)/ 1000 >= 10) {
+            $('#essIframe').hide();
+            $('#loginBtn').text('ESS');
+        }
+
+        setTimeout(closeInactiveEss, 1000);
+    }
+
+    function setButtonStyle(btn) {
+
         btn
             .css('display','inline-block')
             .css('text-decoration','none')
@@ -655,37 +800,24 @@
             .css('cursor','pointer');
     }
 
-    function isBigScreen(){
-        return $(window).width() > 3000;
-    }
+    function minimizeEssFrame() {
 
-    function minimizeEssFrame(){
         var essIframe = $('#essIframe');
         essIframe
             .attr('maximized','false')
             .css('position','fixed')
             .css('z-index','100')
-            .css('border','1px solid gray')
-            .css('border-radius','10px')
-            .css('background-color','#66A3C7');
+            .css('border','0')
+            .css('top','289px')
+            .css('left','calc(50% - 5px)')
+            .css('width','50%')
+            .css('height','calc(100% - 294px)');
 
-        if (isBigScreen()){
-            essIframe
-                .css('top','300px')
-                .css('left','calc(50% - 5px)')
-                .css('width','50%')
-                .css('height','calc(100% - 305px)');
-        }
-        else {
-            essIframe
-                .css('top','300px')
-                .css('left','635px')
-                .css('width','calc(100% - 640px)')
-                .css('height','calc(100% - 305px)');
-        }
+        $('#oldNewEssBtn').show();
     }
 
-    function maximizeEssFrame(){
+    function maximizeEssFrame() {
+
         var essIframe = $('#essIframe');
         essIframe
             .attr('maximized','true')
@@ -695,7 +827,8 @@
             .css('height', 'calc(100% - 55px)');
     }
 
-    function collectTimmiHours(){
+    function collectTimmiHours() {
+
         $('.day-date').each(function() {
             var date = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
             var year = date.substring(0, 4);
@@ -710,14 +843,15 @@
                 essIframe.contentWindow.postMessage({
                     day: date.format('YYYY-MM-DD'),
                     totalHours: totalHours
-                }, $('#essIframe').attr('src'));
+                }, '*');
             }
         });
 
         setTimeout(collectTimmiHours, 500);
     }
 
-    function getTimmiHoursForDay(dayRowElement, day){
+    function getTimmiHoursForDay(dayRowElement, day) {
+
         var totalHours = 0;
         dayRowElement.find('.period').each(function() {
             var inputs = $(this).find('input');
@@ -742,7 +876,8 @@
         return totalHours;
     }
 
-    function addTopRightLinks(){
+    function addTopRightLinks() {
+
         var row = $('#employee_kostl_l').closest('tr');
         row.css('white-space', 'nowrap');
 
@@ -766,12 +901,16 @@
     }
 
     function isSessionTimedOut(){
+
         return ($('form[name="loginForm"]').length > 0
                 || $('*:contains("Session not found")').length > 0
                 || $('*:contains("Session does not exist")').length > 0
                 || $('*:contains("Session timed out")').length > 0
                 || $('*:contains("session is expired")').length > 0
-                || $('*:contains("This logon is obsolete and deprecated")').length > 0);
+                || $('*:contains("This logon is obsolete and deprecated")').length > 0
+                || $('*:contains("Choose one of the available Identity Providers")').length > 0
+                || $('*:contains("Service Not Available")').length > 0
+                || $('*:contains("You logged of")').length > 0);
     }
 
     function enableEnterKeySave(){
@@ -801,11 +940,13 @@
     }
 
     function isCommentField(element){
+
         var id = element.attr('id');
         return id && id.startsWith('timesheet_tsdurationdata') && id.endsWith('shorttext');
     }
 
     function enableDotDecimalEntry(){
+
         $(document).on('change', 'input', function() {
             if (isWorkhourInputField($(this))){
                 $(this).val($(this).val().replace('.', ','));
@@ -814,12 +955,18 @@
     }
 
     function isWorkhourInputField(element){
+
         var id = element.attr('id');
-        return (id && id.startsWith("timesheet_tsdurationdata") && id.endsWith("hours"));
+        if (id && id.startsWith("timesheet_tsdurationdata") && id.endsWith("hours")) {
+            return true;
+        }
+
+        return elemnet.hasClass('MuiInputBase-input');
 
     }
 
     function fixLayout(){
+
         $('head').append('<link _id="urstyle" rel="stylesheet" type="text/css" href="/sap/public/bc/bsp/Design2008/themes/sap_tradeshow/ur/ur_sf3.css?7.33.3.72.0">');
 
         //fix overall size
@@ -987,6 +1134,7 @@
     }
 
     function addWeekButtons() {
+
         if ($('#timesheet_pperiod').length === 1){
             var container = $('input[id="myinputfield"]').closest('td');
             container.children().hide();
@@ -1014,6 +1162,7 @@
     }
 
     function showAddItem(){
+
         if ($('input[id="timesheet_tsdurationdata[3].mondhours"]').length === 1){
             return;
         }
@@ -1048,7 +1197,8 @@
         newCell.find('img').css('margin-right', '10px');
     }
 
-    function listenForTimmiHours(){
+    function listenForTimmiHours() {
+
         $(window).on('message', function (e) {
             var timmiRow = $('#timmi_row');
             var diffRow = $('#diff_row');
@@ -1108,16 +1258,161 @@
         });
     }
 
-    function addEndOfMonthWarning(){
+    function getFirstDayOfWeek() {
+
+        if ($('#mainContainer').length == 0) {
+            return;
+        }
+        var firstDay = $('#mainContainer').text().replace('Mo ','');
+        firstDay += '/' + new Date().getFullYear();
+        return moment(firstDay , 'DD/MM/YYYY');
+    }
+
+    function listenForTimmiHoursModernEss() {
+
+        $(window).on('message', function (e) {
+
+            var firstDayOfWeek = getFirstDayOfWeek();
+            if (!firstDayOfWeek) {
+                return;
+            }
+
+            $('footer span:contains("/")').each(async function(dayOfWeek) {
+
+                var currentDay = firstDayOfWeek.clone().add(dayOfWeek, 'days');
+
+                if (currentDay.format('YYYY-MM-DD') == e.originalEvent.data.day) {
+
+                    var fillButtons = $('.fillDayBtn[day="' + currentDay.format('YYYY-MM-DD') + '"]');
+                    fillButtons.hide();
+
+                    var diffCell = $(this);
+                    diffCell.val('')
+                        .css('background-color', '')
+                        .css('color', '#6D6D6D')
+                        .css('padding', '2px')
+                        .css('border-radius', '2px');
+
+                    diffCell.prev()
+                        .css('background-color', '')
+                        .css('color', '#6D6D6D')
+                        .css('padding', '2px')
+                        .css('border-radius', '2px');
+
+                    var timmiHours = parseFloat(e.originalEvent.data.totalHours);
+                    if (!timmiHours) {
+                        return;
+                    }
+
+                    var decimalPlaces = 2;
+
+                    var newValueForDiffCell = timmiHours.toFixed(decimalPlaces).replace('.',',');
+                    var essHoursRaw = diffCell.prev().text();
+                    if (essHoursRaw.indexOf(':') !== -1) {
+                        essHoursRaw = moment.duration(essHoursRaw).asHours();
+                        newValueForDiffCell = convertDecimalHoursToHoursAndMinutes(newValueForDiffCell);
+                    }
+                    else {
+                        essHoursRaw = essHoursRaw.replace(',','.')
+                    }
+                    var essHours = parseFloat(essHoursRaw);
+
+                    diffCell.html(' /&nbsp;' + newValueForDiffCell);
+
+                    var diff = essHours - timmiHours;
+
+                    if (parseFloat(Math.abs(diff.toFixed(decimalPlaces))) > Number.EPSILON){
+                        diffCell
+                            .css('background-color', 'lightcoral')
+                            .css('color','white');
+                        diffCell.prev()
+                            .css('background-color', 'lightcoral')
+                            .css('color','white');
+
+                        diffCell.attr('dayTotalDiffCellDate', currentDay.format('YYYY-MM-DD'));
+                        diffCell.attr('dayTotalDiffCellDiffValue', diff.toFixed(decimalPlaces));
+                        diffCell.attr('dayTotalDiffCellEssHours', essHours);
+
+                        if (diff < 0){
+                            diffCell.attr('title', 'You have ' + Math.abs(diff).toFixed(decimalPlaces) + ' hours more in Timmi compared to ESS');
+                        }
+                        else {
+                            diffCell.attr('title', 'You have ' + diff.toFixed(decimalPlaces) + ' hours more in ESS compared to Timmi');
+                        }
+                        fillButtons.each(function(){
+                            var hourInCell = parseFloat(diff);
+                            if (hourInCell > 0 || diff < 0) {
+                                $(this).show();
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }
+
+    function convertDecimalHoursToHoursAndMinutes(hoursWithDecimals) {
+
+        var parts = hoursWithDecimals.replace('.',',').split(',');
+        var hours = parts[0];
+        var decimalHours = parts[1] || 0;
+        var minutes = Math.round(decimalHours * 0.6);
+        if (minutes < 10) {
+            minutes += '0';
+        }
+        return hours + ':' + minutes;
+    }
+
+    function addEndOfMonthWarning() {
+
         var secondLastWorkday = getSecondLastWorkdayOfMonth();
         $('span[weekTitle]').each(function(){
-            if ($(this).text().indexOf(secondLastWorkday.format('DD.MM.YYYY')) != -1){
+            if ($(this).text().indexOf(secondLastWorkday.format('DD.MM.YYYY')) != -1) {
                 $(this).css('background-color','lightyellow');
                 $(this).css('border-radius','5px');
                 var text = secondLastWorkday.format('dddd DD.MM.YYYY') + ' is the second last working day of ' + secondLastWorkday.format('MMMM') + '. You should fill out and release the whole month no later than ' + secondLastWorkday.format('dddd') + '.';
                 $(this).closest('table').before($('<span style="background-color:lightyellow;padding:5px;font-size:12px;border-radius:5px;">' + text + '</span>'));
             }
         });
+    }
+
+    function addEndOfMonthWarningModernEss() {
+
+        setTimeout(function() { addEndOfMonthWarningModernEss(); }, 100);
+
+        if ($('#mainHeader').length == 0) {
+            // not loaded yet
+            return;
+        }
+
+        var warnUser = false;
+
+        var secondLastWorkday = getSecondLastWorkdayOfMonth();
+        $('span').each(function() {
+            if ($(this).text().indexOf(secondLastWorkday.format('DD/MM')) != -1) {
+                $(this).css('background-color','lightyellow');
+                $(this).css('border-radius','5px');
+                warnUser = true;
+            }
+        });
+
+        if ($('#monthEndWarning').length == 0) {
+            var text = secondLastWorkday.format('dddd DD.MM.YYYY') + ' is the second last working day of ' + secondLastWorkday.format('MMMM') + '. You should fill out and release the whole month no later than ' + secondLastWorkday.format('dddd') + '.';
+            $('#mainHeader').parent().parent()
+                    .append($('<span style="background-color:lightyellow;padding:5px;font-size:12px;border-radius:5px;" id="monthEndWarning">' + text + '</span>'))
+                    .removeClass('MuiGrid-grid-xs-6')
+                    .addClass('MuiGrid-grid-xs-11')
+                    .next()
+                    .removeClass('MuiGrid-grid-xs-6')
+                    .addClass('MuiGrid-grid-xs-1');
+        }
+
+        if (!warnUser) {
+            $('#monthEndWarning').hide();
+        }
+        else {
+            $('#monthEndWarning').show();
+        }
     }
 
     function isInIframe(){
@@ -1128,7 +1423,8 @@
         }
     }
 
-    function addFillButtons(){
+    function addFillButtons() {
+
         if (!isInIframe()){
             return;
         }
@@ -1158,7 +1454,58 @@
         $('input[id*="weektotal"]').parent('span').css('background-color','transparent');
     }
 
+    function addFillButtonsModernEss() {
+
+        if (!isInIframe()){
+            return;
+        }
+
+        setTimeout(function() { addFillButtonsModernEss(); }, 100);
+
+        var firstDayOfWeek = getFirstDayOfWeek();
+        if (!firstDayOfWeek) {
+            // not loaded yet
+            return;
+        }
+
+        if ($('.fillDayBtn').length != 0) {
+            // already added
+            return;
+        }
+
+        $('input.MuiInputBase-input:not([readonly])').each(function(){
+            var fillDayBtn = $('<a href="javascript:void(0);" class="fillDayBtn">Fill</a>');
+            fillDayBtn.hide(); // avoid showing buttons from other month
+            fillDayBtn.insertBefore($(this).parent());
+
+            var dayOfWeek = $(this).closest('.MuiGrid-container').find('input.MuiInputBase-input:not([readonly])').index(this);
+
+            var currentDay = firstDayOfWeek.clone().add(dayOfWeek, 'days');
+            $(this).attr('day', currentDay.format('YYYY-MM-DD'));
+            fillDayBtn.attr('day', currentDay.format('YYYY-MM-DD'));
+        });
+
+        var btn = $('.fillDayBtn');
+        btn.css('font-size', '9px');
+        btn.css('margin-right', '6px');
+        btn.css('margin-left', '5px');
+        btn.css('cursor', 'pointer');
+        btn.css('vertical-align','middle');
+        btn.attr('title', 'fill / remove the remaining hours from Timmi here');
+
+        btn.click(function() {
+            if (fillCellWithDayDiffModernEss($(this).next().find('input'))){
+                $('button>span:contains("Save")')
+                    .focus()
+                    .click();
+            }
+        });
+
+        return;
+    }
+
     function fillCellWithDayDiff(element) {
+
         if (!isWorkdayInputField(element)){
             return false;
         }
@@ -1178,14 +1525,75 @@
         return true;
     }
 
+    function fillCellWithDayDiffModernEss(element) {
+
+        var essTotal = $('[dayTotalDiffCellDate="' + element.attr('day') + '"]').attr('dayTotalDiffCellEssHours');
+        var diffCell = $('[dayTotalDiffCellDate="' + element.attr('day') + '"]');
+        var diff = parseFloat(diffCell.attr('dayTotalDiffCellDiffValue').replace(',','.'));
+        if (!diff) {
+            alert('There are no hours to fill');
+            return false;
+        }
+        var timeInCell = element.val().replace(',','.');
+        if (diffCell.text().indexOf(':') !== -1) {
+            timeInCell = moment.duration(timeInCell).asHours();
+        }
+        var currentHours = parseFloat(timeInCell) || 0;
+        if (currentHours < diff){
+            currentHours = 0;
+            diff = 0;
+        }
+
+        var newValue = Math.abs(currentHours - diff).toFixed(2).replace('.',',');
+        if (diffCell.text().indexOf(':') !== -1) {
+            newValue = convertDecimalHoursToHoursAndMinutes(newValue);
+        }
+        if (newValue == '0:00' || newValue == '0,00') {
+            newValue = '';
+        }
+        setValueOfReactInputField(element[0], newValue);
+
+        return true;
+    }
+
+    function setValueOfReactInputField(element, value) {
+
+        const valueSetter = Object.getOwnPropertyDescriptor(element, 'value').set;
+        const prototype = Object.getPrototypeOf(element);
+        const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
+
+        if (valueSetter && valueSetter !== prototypeValueSetter) {
+            prototypeValueSetter.call(element, value);
+        } else {
+            valueSetter.call(element, value);
+        }
+        element.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
     function keepSessionOpen(){
+
         // need to refresh after 20 minutes because ESS automatically redirects to timeout.html after 30min. 25min is still too long
         setTimeout(function(){
-            $('#refreshIcon').click();
+            if (isLegacyTimeEntryDisplayed()) {
+                $('#refreshIcon').click();
+            }
+            else {
+                window.location.reload();
+            }
         }, 20 * 60 * 1000);
     }
 
-    function formatDayTitles(){
+    function sendActivitySignal() {
+
+        window.parent.postMessage({
+            essIsActive : isTimeEntryDisplayed() || isWbsOverviewDisplayed()
+        }, '*');
+
+        setTimeout(sendActivitySignal, 100);
+    }
+
+    function formatDayTitles() {
+
         $('#dateRow').find('.urTxtStd:contains("/")').each(function() {
             $(this).css('padding-right','20px');
             var newText = $(this).text().replace('/','.')
@@ -1223,12 +1631,14 @@
 
     var _showWeekend = false;
 
-    function toggleWeekend(){
+    function toggleWeekend() {
+
         _showWeekend = !_showWeekend;
         hideWeekend();
     }
 
-    function hideWeekend(){
+    function hideWeekend() {
+
         var visible = _showWeekend || false;
 
         var elements = [
@@ -1249,6 +1659,7 @@
     }
 
     async function addTimmiHours() {
+
         if (!isInIframe()){
             return;
         }
@@ -1281,6 +1692,7 @@
     }
 
     function setCookie(name,value,days) {
+
         var expires = "";
         if (days) {
             var date = new Date();
@@ -1291,6 +1703,7 @@
     }
 
     function getCookie(name) {
+
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
         for(var i=0;i < ca.length;i++) {
@@ -1301,11 +1714,25 @@
         return null;
     }
 
-    function eraseCookie(name) {
+    function deleteCookie(name) {
+
         document.cookie = name+'=; Max-Age=-99999999;';
     }
 
+    function deleteAllCookies() {
+
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+    }
+
     function getSecondLastWorkdayOfMonth() {
+
         var endOfMonth = moment().endOf('M');
         switch(endOfMonth.isoWeekday()) {
             case 1:
