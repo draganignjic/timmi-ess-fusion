@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.5
+// @version      0.7.6
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -121,13 +121,28 @@
 <style id="timmi-compact-style">
 
     week-attendance {
-        max-width: calc(50% + 100px)!important;
-        margin-left: -150px!important;
-        z-index: 100;
+        max-width: calc(50% - 50px) !important;
+        z-index: 100 !important;
     }
-    #main-navigation {
-        background-color: white!important;
+
+    @media only screen and (max-width: 1900px) {
+
+        week-attendance {
+            max-width: calc(50% + 100px) !important;
+            margin-left: -150px !important;
+        }
+
+        #main-navigation { background-color: white!important; }
+        .time-entry-separator { margin: 5px !important; }
+        .leave { margin-left: 44px !important; }
+        .title { margin-left: 0 !important; }
+        timesheet-header { margin-left: 50px !important; }
+        .recap { width: 150px !important; }
+        .details { padding-left: 0 !important; }
+        day-attendance { margin-left: -10px !important; }
+        day-attendance > .details { margin-left: -60px !important; }
     }
+}
 
 </style>`));
     }
@@ -721,19 +736,23 @@
             .css('font-size','14px')
             .css('text-decoration', 'none');
 
+        var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
+
         var helpBox = $(`<div id="helpBox">
         <b>Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br><br>
 
-        If you cannot login try following <br>
+        If you cannot login try following:<br>
         <ul>
             <li style="margin-bottom:10px">Restart your Browser.</li>
             <li style="margin-bottom:10px">Activate third party cookies in your
             <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-chrome.png" target="_blank">Chrome</a> or
             <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-firefox.png" target="_blank">Firefox</a> setting.</li>
-            <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
+            <li style="margin-bottom:10px">Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
+            <li style="margin-bottom:10px">Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
+            <li>Contact the Support in <a href="` + atob(emailHiddenFromWebCrawler) + `">MS Teams</a></li>
         </ul>
         <br>
-        If you still cannot login, contact the Support in MS Teams
+
         </div>`);
         $('body').append(helpBox);
         helpBox
@@ -743,7 +762,7 @@
             .css('bottom', '50px')
             .css('right', '220px')
             .css('width', '550px')
-            .css('height', '180px')
+            .css('height', '200px')
             .css('z-index', 1000)
             .css('font-family', 'arial')
             .css('font-size', '14px')
@@ -753,9 +772,6 @@
         $('#closeHelpBtn').click(function() {
             helpBox.hide();
         });
-
-        var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
-        helpBox.append($('<a href="' + atob(emailHiddenFromWebCrawler) + '">here</a>'));
 
         setTimeout(function() {
             var specialUser = 'R0lSQUxETyBPVkFMTEUgR0lOTkE=';
