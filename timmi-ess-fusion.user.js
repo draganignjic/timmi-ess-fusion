@@ -121,22 +121,18 @@
 <style id="timmi-compact-style">
 
     week-attendance {
-        max-width: calc(50% - 50px) !important;
+        max-width: calc(50% + 100px) !important;
+        margin-left: -150px !important;
         z-index: 100 !important;
     }
 
-    @media only screen and (max-width: 1900px) {
+    #main-navigation { background-color: white!important; }
 
-        week-attendance {
-            max-width: calc(50% + 100px) !important;
-            margin-left: -150px !important;
-        }
+    @media only screen and (max-width: 2000px) {
 
-        #main-navigation { background-color: white!important; }
         .time-entry-separator { margin: 5px !important; }
         .leave { margin-left: 44px !important; }
         .title { margin-left: 0 !important; }
-        timesheet-header { margin-left: 50px !important; }
         .recap { width: 150px !important; }
         .details { padding-left: 0 !important; }
         day-attendance { margin-left: -10px !important; }
