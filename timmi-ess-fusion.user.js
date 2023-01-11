@@ -128,7 +128,7 @@
 
     #main-navigation { background-color: white!important; }
 
-    @media only screen and (max-width: 2000px) {
+    @media only screen and (max-width: 1900px) {
 
         .time-entry-separator { margin: 5px !important; }
         .leave { margin-left: 44px !important; }
