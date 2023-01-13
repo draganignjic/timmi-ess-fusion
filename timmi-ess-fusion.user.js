@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.6
+// @version      0.7.7
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -94,6 +94,9 @@
         $('span:contains("start by using one of the options.")').closest('div').hide();
         $('main > div > div > div > .MuiPaper-elevation1').css('width', '30%');
         $('span:contains("Copy last week")').css('width', '80px');
+
+        // Make sure that WBS name not truncated. Sometimes there are wbs with similar name which only differ at the the end.
+        $('main div').css('overflow', 'visible');
 
         setTimeout(makeModernEssCompact, 500);
     }
