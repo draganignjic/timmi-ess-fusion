@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.8
+// @version      0.7.9
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -121,7 +121,8 @@
 
     function fixTimmiLayout() {
 
-        $('body').append($(`
+        if ($('#timmi-compact-style').length == 0) {
+            $('body').append($(`
 <style id="timmi-compact-style">
 
     week-attendance {
@@ -145,6 +146,59 @@
 }
 
 </style>`));
+        }
+
+        $('week-attendance').each(function() {
+            if ($(this).find('.closeBtn').length == 0) {
+                var closeBtn = $('<a class="closeBtn">show only this week</a>');
+                closeBtn
+                    .css('position', 'absolute')
+                    .css('z-index', '10000')
+                    .css('right', '60px')
+                    .css('top', '10px');
+
+                closeBtn.click(function() {
+                    if ($(this).text() == 'show all weeks') {
+                        $('week-attendance').show();
+                        $(this).text('show only this week');
+                    }
+                    else {
+                        $('week-attendance').hide();
+                        $(this).closest('week-attendance').show();
+                        $(this).text('show all weeks');
+                    }
+                });
+                $(this).append(closeBtn);
+            }
+        });
+        if ($('.showAllWeeksBtn').length == 0) {
+            var showAllWeeksBtn = $('<a class="showAllWeeksBtn">show all weeks</a>');
+            showAllWeeksBtn
+                .css('position','fixed')
+                .css('left','500px')
+                .css('bottom','10px')
+                .css('font-family','arial')
+                .css('color','#00b2ed')
+                .css('cursor','pointer');
+
+            showAllWeeksBtn.click(function(){
+                $('week-attendance a:contains("show all weeks")').click();
+            });
+            $('body').append(showAllWeeksBtn);
+
+            setTimeout(function() {
+              $('week-header').each(function() {
+                if ($(this).next().next().hasClass('in')) {
+                    $(this).closest('week-attendance').find('a').click();
+                }
+            })}, 2000);
+
+        };
+
+        $('day-attendance').css('background', '');
+        $('day-attendance span:contains("heute")').closest('day-attendance').css('background', '#F0F1FE');
+
+        setTimeout(fixTimmiLayout, 500);
     }
 
     function calculateDiffsOnChange() {
@@ -777,7 +831,7 @@
             var specialUser = 'R0lSQUxETyBPVkFMTEUgR0lOTkE=';
             //specialUser = 'SUdOSklDIERSQUdBTg==';
             if ($('span:contains("' + atob(specialUser) + '")').length > 0) {
-                var cheesyMessage = "RHJhZ2FuIExvdmVzIFlvdQ==";
+                var cheesyMessage = "RHJhZ2FuIGFuZCBMdW5hIGxvdmUgeW91";
                 $('body').append('<div style="position:fixed;top:10px;left:50%;z-index:10000;font-family:arial;color:gray;">' + atob(cheesyMessage) + ' <span style="color:red;font-size:20px;font-style: normal">&#10084;</span></div>');
             }
         }, 1000);
@@ -1306,14 +1360,14 @@
                     diffCell.val('')
                         .css('background-color', '')
                         .css('color', '#6D6D6D')
-                        .css('padding', '2px')
-                        .css('border-radius', '2px');
+                        .css('padding', '4px')
+                        .css('border-radius', '0 4px 4px 0');
 
                     diffCell.prev()
                         .css('background-color', '')
                         .css('color', '#6D6D6D')
-                        .css('padding', '2px')
-                        .css('border-radius', '2px');
+                        .css('padding', '4px')
+                        .css('border-radius', '4px 0 0 4px');
 
                     var timmiHours = parseFloat(e.originalEvent.data.totalHours);
                     if (!timmiHours) {
@@ -1337,7 +1391,7 @@
 
                     var diff = essHours - timmiHours;
 
-                    if (parseFloat(Math.abs(diff.toFixed(decimalPlaces))) > Number.EPSILON){
+                    if (parseFloat(Math.abs(diff.toFixed(decimalPlaces))) > Number.EPSILON) {
                         diffCell
                             .css('background-color', 'lightcoral')
                             .css('color','white');
@@ -1361,6 +1415,14 @@
                                 $(this).show();
                             }
                         });
+                    }
+                    else {
+                        diffCell
+                            .css('background-color', '#c7ebe8')
+                            .css('color','#00A59C');
+                        diffCell.prev()
+                            .css('background-color', '#c7ebe8')
+                            .css('color','#00A59C');
                     }
                 }
             });
