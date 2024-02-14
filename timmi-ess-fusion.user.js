@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.7.9
+// @version      0.8.0
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -12,6 +12,7 @@
 // @grant        GM_addValueChangeListener
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js
 // @downloadURL  https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
 // @updateURL    https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js
 // ==/UserScript==
@@ -45,7 +46,6 @@
 
         await appendEss();
         collectTimmiHours();
-        fixTimmiLayout();
         await listenForNewSession();
         closeInactiveEss();
     }
@@ -89,12 +89,16 @@
             return;
         }
 
-        $('div').css('min-width', 0);
-        $('footer span').css('word-break', 'break-word');
-        $('span:contains("start by using one of the options.")').closest('div').hide();
-        $('main > div > div > div > .MuiPaper-elevation1').css('width', '28%');
-        $('span:contains("Add activity")').css('width', '80px');
-        $('span:contains("Copy last week")').css('width', '80px');
+        $('.jss34')
+            .css('margin-left', 'unset')
+            .css('max-width', 'unset');
+
+        // $('div').css('min-width', 0);
+        // $('footer span').css('word-break', 'break-word');
+        // $('span:contains("start by using one of the options.")').closest('div').hide();
+        // $('main > div > div > div > .MuiPaper-elevation1').css('width', '28%');
+        // $('span:contains("Add activity")').css('width', '80px');
+        // $('span:contains("Copy last week")').css('width', '80px');
 
         // Make sure that WBS name not truncated. Sometimes there are wbs with similar name which only differ at the the end.
         $('main div').css('overflow', 'visible');
@@ -117,88 +121,6 @@
         }
         $('body').append($('<div id="' + duplicateExecutionId + '" style="display:none"></div>'));
         return false;
-    }
-
-    function fixTimmiLayout() {
-
-        if ($('#timmi-compact-style').length == 0) {
-            $('body').append($(`
-<style id="timmi-compact-style">
-
-    week-attendance {
-        max-width: calc(50% + 100px) !important;
-        margin-left: -150px !important;
-        z-index: 100 !important;
-    }
-
-    #main-navigation { background-color: white!important; }
-
-    @media only screen and (max-width: 1900px) {
-
-        .time-entry-separator { margin: 5px !important; }
-        .leave { margin-left: 44px !important; }
-        .title { margin-left: 0 !important; }
-        .recap { width: 150px !important; }
-        .details { padding-left: 0 !important; }
-        day-attendance { margin-left: -10px !important; }
-        day-attendance > .details { margin-left: -60px !important; }
-    }
-}
-
-</style>`));
-        }
-
-        $('week-attendance').each(function() {
-            if ($(this).find('.closeBtn').length == 0) {
-                var closeBtn = $('<a class="closeBtn">show only this week</a>');
-                closeBtn
-                    .css('position', 'absolute')
-                    .css('z-index', '10000')
-                    .css('right', '60px')
-                    .css('top', '10px');
-
-                closeBtn.click(function() {
-                    if ($(this).text() == 'show all weeks') {
-                        $('week-attendance').show();
-                        $(this).text('show only this week');
-                    }
-                    else {
-                        $('week-attendance').hide();
-                        $(this).closest('week-attendance').show();
-                        $(this).text('show all weeks');
-                    }
-                });
-                $(this).append(closeBtn);
-            }
-        });
-        if ($('.showAllWeeksBtn').length == 0) {
-            var showAllWeeksBtn = $('<a class="showAllWeeksBtn">show all weeks</a>');
-            showAllWeeksBtn
-                .css('position','fixed')
-                .css('left','500px')
-                .css('bottom','10px')
-                .css('font-family','arial')
-                .css('color','#00b2ed')
-                .css('cursor','pointer');
-
-            showAllWeeksBtn.click(function(){
-                $('week-attendance a:contains("show all weeks")').click();
-            });
-            $('body').append(showAllWeeksBtn);
-
-            setTimeout(function() {
-              $('week-header').each(function() {
-                if ($(this).next().next().hasClass('in')) {
-                    $(this).closest('week-attendance').find('a').click();
-                }
-            })}, 2000);
-
-        };
-
-        $('day-attendance').css('background', '');
-        $('day-attendance span:contains("heute")').closest('day-attendance').css('background', '#F0F1FE');
-
-        setTimeout(fixTimmiLayout, 500);
     }
 
     function calculateDiffsOnChange() {
@@ -697,9 +619,14 @@
 
     async function appendEss() {
 
+        if ($('.pageLayout-container-main-content').length == 0) {
+            setTimeout(appendEss, 1000);
+            return;
+        }
+
         var essIframe = $('<iframe id="essIframe" maximized="false" src="' + await getStartUrl() + '"/>');
         essIframe.hide();
-        $('body').append(essIframe);
+        $('.pageLayout-container-main-content').append(essIframe);
         minimizeEssFrame();
 
         appendHelpBox();
@@ -875,13 +802,11 @@
         var essIframe = $('#essIframe');
         essIframe
             .attr('maximized','false')
-            .css('position','fixed')
             .css('z-index','100')
-            .css('border','0')
-            .css('top','289px')
-            .css('left','calc(50% - 5px)')
-            .css('width','50%')
-            .css('height','calc(100% - 294px)');
+            .css('border','1px solid lightgray')
+            .css('border-radius','10px')
+            .css('width','100%')
+            .css('height','600px');
 
         $('#oldNewEssBtn').show();
     }
@@ -894,26 +819,32 @@
             .css('top', '50px')
             .css('left', '50px')
             .css('width', 'calc(100% - 55px)')
-            .css('height', 'calc(100% - 55px)');
+            .css('height', 'calc(100% - 55px)')
+            .css('border', '1px solid gray');
     }
 
     function collectTimmiHours() {
 
-        $('.day-date').each(function() {
-            var date = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
-            var year = date.substring(0, 4);
-            var month = date.substring(5,7) - 1;
-            var day = $(this).text();
-            date = moment(new Date(year, month, day));
-            var hoursDiff = $(this).parent().parent().find('text.amount').text();
-            var totalHours = getTimmiHoursForDay($(this).closest('day-attendance'), date);
+        var dateText = $('.timesheetPicker-textfield-input-content span').eq(0).text().trim();
+        var month = moment(dateText, 'MMMM', $('html').attr('lang'));
 
-            var essIframe = document.getElementById('essIframe');
-            if (essIframe){
-                essIframe.contentWindow.postMessage({
-                    day: date.format('YYYY-MM-DD'),
-                    totalHours: totalHours
-                }, '*');
+        $('tt-date-display').each(function() {
+            var dayNumber = $(this).find('span').eq(0).text().replace(/\D/g, '');
+            var day = month.set("date", dayNumber)
+
+            var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
+            if (hoursAndMinutes) {
+                var hours = parseInt(hoursAndMinutes.split('h')[0].trim());
+                var minutes = hoursAndMinutes.split('h')[1].trim();
+                var totalHours = hours + minutes/60;
+
+                var essIframe = document.getElementById('essIframe');
+                if (essIframe) {
+                    essIframe.contentWindow.postMessage({
+                        day: day.format('YYYY-MM-DD'),
+                        totalHours: totalHours
+                    }, '*');
+                }
             }
         });
 
