@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.2
+// @version      0.8.3
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -711,26 +711,32 @@
         $('body').append(helpBtn);
         helpBtn
             .css('position','fixed')
-            .css('bottom','17px')
+            .css('width','70px')
+            .css('bottom','14px')
+            .css('line-height','10px')
             .css('right','220px')
             .css('z-index','100')
             .css('font-family','arial')
             .css('font-size','14px')
-            .css('text-decoration', 'none');
+            .css('background-color', 'white')
+            .css('padding', '5px')
+            .css('border', '1px solid lightgray')
+            .css('border-radius', '5px')
+            .css('text-decoration', 'none')
+            .css('text-align', 'center');
 
         var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
 
         var helpBox = $(`<div id="helpBox">
-        <b>Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br><br>
-
-        If you cannot login try following:<br>
+        <b>Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br>
+        If you cannot login try following:
         <ul>
-            <li style="margin-bottom:10px">Restart your Browser.</li>
-            <li style="margin-bottom:10px">Activate third party cookies in your
+            <li>Restart your Browser.</li>
+            <li>Activate third party cookies in your
             <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-chrome.png" target="_blank">Chrome</a> or
             <a href="https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/images/timmi-ess-fusion-allow-cookies-firefox.png" target="_blank">Firefox</a> setting.</li>
-            <li style="margin-bottom:10px">Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
-            <li style="margin-bottom:10px">Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
+            <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
+            <li>Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
             <li>Contact the Support in <a href="` + atob(emailHiddenFromWebCrawler) + `">MS Teams</a></li>
         </ul>
         <br>
@@ -739,7 +745,8 @@
         $('body').append(helpBox);
         helpBox
             .css('background-color', 'white')
-            .css('border', '1px solid gray')
+            .css('border', '1px solid lightgray')
+            .css('border-radius', '10px')
             .css('position', 'fixed')
             .css('bottom', '50px')
             .css('right', '220px')
