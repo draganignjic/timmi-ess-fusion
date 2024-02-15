@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.0
+// @version      0.8.1
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -48,6 +48,7 @@
         collectTimmiHours();
         await listenForNewSession();
         closeInactiveEss();
+        setTimeout(() => { window.location.reload(); }, 1000 * 60 * 15);
     }
 
     await sessionHandling();
@@ -825,7 +826,13 @@
 
     function collectTimmiHours() {
 
-        var dateText = $('.timesheetPicker-textfield-input-content span').eq(0).text().trim();
+        setTimeout(collectTimmiHours, 500);
+
+        var dateText = $('.timesheetPicker-textfield-input-content span').eq(0).text()?.trim();
+        if (!dateText) {
+            return;
+        }
+
         var month = moment(dateText, 'MMMM', $('html').attr('lang'));
 
         $('tt-date-display').each(function() {
@@ -847,8 +854,6 @@
                 }
             }
         });
-
-        setTimeout(collectTimmiHours, 500);
     }
 
     function getTimmiHoursForDay(dayRowElement, day) {
