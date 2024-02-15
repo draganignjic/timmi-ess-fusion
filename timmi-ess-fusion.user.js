@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.1
+// @version      0.8.2
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -841,8 +841,9 @@
 
             var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
             if (hoursAndMinutes) {
-                var hours = parseInt(hoursAndMinutes.split('h')[0].trim());
-                var minutes = hoursAndMinutes.split('h')[1].trim();
+                var hmParts = hoursAndMinutes.replace('Std.','h').replace('H','h').split('h');
+                var hours = parseInt(hmParts[0].trim());
+                var minutes = hmParts[1].trim();
                 var totalHours = hours + minutes/60;
 
                 var essIframe = document.getElementById('essIframe');
