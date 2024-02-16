@@ -842,24 +842,27 @@
 
         var month = moment(dateText, 'MMMM', $('html').attr('lang'));
 
-        $('tt-date-display').each(function() {
+        $('tt-date-display').each(function() {           
             var dayNumber = $(this).find('span').eq(0).text().replace(/\D/g, '');
             var day = month.set("date", dayNumber)
+            let totalHours = 0;
 
-            var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
-            if (hoursAndMinutes) {
-                var hmParts = hoursAndMinutes.replace('Std.','h').replace('H','h').split('h');
-                var hours = parseInt(hmParts[0].trim());
-                var minutes = hmParts[1].trim();
-                var totalHours = hours + minutes/60;
-
-                var essIframe = document.getElementById('essIframe');
-                if (essIframe) {
-                    essIframe.contentWindow.postMessage({
-                        day: day.format('YYYY-MM-DD'),
-                        totalHours: totalHours
-                    }, '*');
+            if(!this.closest('div').children[2].children[0].getAttribute('class').includes('mod-absence')){
+                var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
+                if (hoursAndMinutes) {
+                    const hoursAndMinutesRegex = new RegExp("([0-9]{1,2})[A-Za-z\. ]*?([0-9]{2})");
+                    let matchGroups = hoursAndMinutes.match(hoursAndMinutesRegex);
+                    var hours = parseInt(matchGroups[1]);
+                    var minutes = matchGroups[2];
+                    totalHours = hours + minutes / 60;
                 }
+            }
+            var essIframe = document.getElementById('essIframe');
+            if (essIframe) {
+                essIframe.contentWindow.postMessage({
+                    day: day.format('YYYY-MM-DD'),
+                    totalHours: totalHours
+                }, '*');
             }
         });
     }
