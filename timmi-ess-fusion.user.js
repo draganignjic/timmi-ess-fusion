@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.4
+// @version      0.8.5
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -638,7 +638,7 @@
         loginBtn
             .css('position','fixed')
             .css('bottom','15px')
-            .css('right','20px')
+            .css('right','340px')
             .css('width','80px')
             .css('height','20px')
             .css('z-index','100')
@@ -650,7 +650,7 @@
         oldLoginBtn
             .css('position','fixed')
             .css('bottom','15px')
-            .css('right','120px')
+            .css('right','440px')
             .css('width','80px')
             .css('height','20px')
             .css('z-index','100')
@@ -714,7 +714,7 @@
             .css('width','70px')
             .css('bottom','14px')
             .css('line-height','10px')
-            .css('right','220px')
+            .css('right','540px')
             .css('z-index','100')
             .css('font-family','arial')
             .css('font-size','14px')
