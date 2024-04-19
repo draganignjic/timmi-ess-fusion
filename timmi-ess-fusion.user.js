@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.6
+// @version      0.8.7
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -840,21 +840,20 @@
 
         var month = moment(dateText, 'MMMM', $('html').attr('lang'));
 
-        $('tt-date-display').each(function() {           
+        $('tt-date-display').each(function() {
             var dayNumber = $(this).find('span').eq(0).text().replace(/\D/g, '');
             var day = month.set("date", dayNumber)
             let totalHours = 0;
 
-            if(!this.closest('div').children[2].children[0].getAttribute('class').includes('mod-absence')){
-                var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
-                if (hoursAndMinutes) {
-                    const hoursAndMinutesRegex = new RegExp("([0-9]{1,2})[A-Za-z\. ]*?([0-9]{2})");
-                    let matchGroups = hoursAndMinutes.match(hoursAndMinutesRegex);
-                    var hours = parseInt(matchGroups[1]);
-                    var minutes = matchGroups[2];
-                    totalHours = hours + minutes / 60;
-                }
+            var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
+            if (hoursAndMinutes) {
+                const hoursAndMinutesRegex = new RegExp("([0-9]{1,2})[A-Za-z\. ]*?([0-9]{2})");
+                let matchGroups = hoursAndMinutes.match(hoursAndMinutesRegex);
+                var hours = parseInt(matchGroups[1]);
+                var minutes = matchGroups[2];
+                totalHours = hours + minutes / 60;
             }
+
             var essIframe = document.getElementById('essIframe');
             if (essIframe) {
                 essIframe.contentWindow.postMessage({
