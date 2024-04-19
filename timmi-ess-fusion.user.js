@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.5
+// @version      0.8.6
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -763,9 +763,7 @@
         });
 
         setTimeout(function() {
-            var specialUser = 'R0lSQUxETyBPVkFMTEUgR0lOTkE=';
-            //specialUser = 'SUdOSklDIERSQUdBTg==';
-            if ($('span:contains("' + atob(specialUser) + '")').length > 0) {
+            if ($('#lucca-banner-avatar').css('background-image').indexOf('employees/929/picture') != -1) {
                 var cheesyMessage = "RHJhZ2FuIGFuZCBMdW5hIGxvdmUgeW91";
                 $('body').append('<div style="position:fixed;top:10px;left:50%;z-index:10000;font-family:arial;color:gray;">' + atob(cheesyMessage) + ' <span style="color:red;font-size:20px;font-style: normal">&#10084;</span></div>');
             }
