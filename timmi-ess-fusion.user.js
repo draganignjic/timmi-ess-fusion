@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.7
+// @version      0.8.9
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -632,7 +632,7 @@
 
         appendHelpBox();
 
-        var loginBtn = $('<button id="loginBtn">Hide</button>');
+        var loginBtn = $('<button id="loginBtn">ESS</button>');
         $('body').append(loginBtn);
         setButtonStyle(loginBtn);
         loginBtn
@@ -669,31 +669,21 @@
                 openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
                 $(this).text('old ESS');
             }
-
-            loginBtn.text($(this).text() === 'Hide' ? 'ESS' : 'Hide');
         });
 
         loginBtn.click(async function(e) {
-            if ($(this).text() === 'Hide') {
-                essIframe.hide();
-            }
-            else if (!isEssActive()) {
+            if (!isEssActive()) {
                 GM.setValue('ess_sessionUrl','');
                 openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 400, 750);
             }
-
-            $(this).text($(this).text() === 'Hide' ? 'ESS' : 'Hide');
         });
 
         $(window).on('message', function (e) {
             if (e.originalEvent.data.loginRequired) {
                 essIframe.hide();
-                loginBtn.text('ESS');
             }
             if (e.originalEvent.data.essIsActive) {
-                if (loginBtn.text() === 'Hide') {
-                    essIframe.show();
-                }
+                essIframe.show();
                 _lastEssActivitySignal = new Date();
             }
             if (e.originalEvent.data.cookiesNeedtoBeActivated) {
