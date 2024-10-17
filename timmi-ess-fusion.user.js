@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.11
+// @version      0.8.12
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -82,6 +82,14 @@
         addFillButtonsModernEss();
         enableEnterKeySave();
         makeModernEssCompact();
+        showUseFirefoxMessage();
+    }
+
+    function showUseFirefoxMessage() {
+
+        setTimeout(showUseFirefoxMessage, 500);
+
+        $('span:contains("incorrect SAP Fiori launchpad configuration or a missing role assignment")').text('Please use "old ESS" or the Firefox Browser');
     }
 
     function makeModernEssCompact() {
