@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.12
+// @version      0.8.13
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -93,6 +93,8 @@
     }
 
     function makeModernEssCompact() {
+
+        $('#shell-hdr').css('z-index', 0); // Enable week "<" and ">" buttons
 
         if (!isInIframe()) {
             return;
