@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.8.13
+// @version      0.8.14
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /ZCA_TIMESHEET
@@ -1337,7 +1337,7 @@
 
                     var diff = essHours - timmiHours;
 
-                    if (parseFloat(Math.abs(diff.toFixed(decimalPlaces))) > Number.EPSILON) {
+                    if (parseFloat(Math.abs(diff.toFixed(decimalPlaces))) > 0.01) {
                         diffCell
                             .css('background-color', 'lightcoral')
                             .css('color','white');
