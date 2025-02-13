@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.0
+// @version      0.9.1
 // @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -86,7 +86,7 @@
                 top.location.href = this.location.href;
             }
         }
-        setTimeout(breakOutOfIframe, 500);
+        setTimeout(breakOutOfIframe, 1000);
     }
 
     function isModernTimeEntryDisplayed() {
