@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.1
+// @version      0.9.2
 // @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -29,7 +29,7 @@
             return;
         }
 
-        await appendEssButtons();
+        appendEssButtons();
         collectTimmiHours();
     }
 
@@ -79,7 +79,7 @@
         return false;
     }
 
-    async function breakOutOfIframe() {
+    function breakOutOfIframe() {
 
         if (isModernTimeEntryDisplayed()) {
             if(this != top) {
@@ -123,7 +123,7 @@
         _loginWindow = newWindow;
     }
 
-    async function appendEssButtons() {
+    function appendEssButtons() {
 
         if ($('.pageLayout-container-main-content').length == 0) {
             setTimeout(appendEssButtons, 1000);
@@ -138,30 +138,30 @@
         loginBtn
             .css('position','fixed')
             .css('bottom','15px')
-            .css('right','340px')
-            .css('width','80px')
-            .css('height','20px')
+            .css('left','min(1250px, calc(100% - 470px))')
+            .css('width','150px')
+            .css('height','40px')
             .css('z-index','100')
             .css('padding','0');
 
-        loginBtn.click(async function(e) {
+        loginBtn.click(function(e) {
             openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 1300, 750);
         });
     }
 
     function appendHelpBox() {
 
-        var helpBtn = $('<a href="javascript:void()">Help</a>');
+        var helpBtn = $('<a href="javascript:void()">ESS Help</a>');
         helpBtn.click(function() {
             $('#helpBox').toggle();
         });
         $('body').append(helpBtn);
         helpBtn
             .css('position','fixed')
-            .css('width','70px')
-            .css('bottom','14px')
+            .css('width','100px')
+            .css('bottom','15px')
             .css('line-height','10px')
-            .css('right','440px')
+            .css('left','min(1140px, calc(100% - 580px))')
             .css('z-index','100')
             .css('font-family','arial')
             .css('font-size','14px')
@@ -175,8 +175,8 @@
         var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
 
         var helpBox = $(`<div id="helpBox">
-        <b>Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br>
-        If you cannot login try following:
+        <b>ESS Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br>
+        If you cannot login to ESS try following:
         <ul>
             <li>Restart your Browser.</li>
             <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
@@ -193,7 +193,7 @@
             .css('border-radius', '10px')
             .css('position', 'fixed')
             .css('bottom', '50px')
-            .css('right', '220px')
+            .css('left','min(1165px, calc(100% - 470px))')
             .css('width', '550px')
             .css('height', '200px')
             .css('z-index', 1000)
@@ -213,9 +213,9 @@
             .css('display','inline-block')
             .css('text-decoration','none')
             .css('background-color','#66A3C7')
-            .css('border','1px solid gray')
+            .css('border','1px solid #66A3C7')
             .css('color','white')
-            .css('font-size','10px')
+            .css('font-size','15px')
             .css('font-family','arial')
             .css('white-space','nowrap')
             .css('padding','5px')
@@ -280,7 +280,7 @@
                 return;
             }
 
-            $('footer span:contains("/")').each(async function(dayOfWeek) {
+            $('footer span:contains("/")').each(function(dayOfWeek) {
 
                 var currentDay = firstDayOfWeek.clone().add(dayOfWeek, 'days');
 
