@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.3
+// @version      0.9.4
 // @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -136,13 +136,10 @@
         $('body').append(loginBtn);
         setButtonStyle(loginBtn);
         loginBtn
-            .css('position','fixed')
-            .css('bottom','15px')
-            .css('left','min(1250px, calc(100% - 470px))')
             .css('width','150px')
             .css('height','40px')
-            .css('z-index','100')
-            .css('padding','0');
+            .css('bottom','64px')
+            .css('left','min(1250px, calc(100% - 470px))');
 
         loginBtn.click(function(e) {
             openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 1300, 750);
@@ -152,36 +149,32 @@
     function appendHelpBox() {
 
         var helpBtn = $('<a href="javascript:void()">ESS Help</a>');
+        setButtonStyle(helpBtn)
         helpBtn.click(function() {
             $('#helpBox').toggle();
         });
         $('body').append(helpBtn);
         helpBtn
-            .css('position','fixed')
-            .css('width','100px')
+            .css('width','150px')
+            .css('height','42px')
             .css('bottom','15px')
-            .css('line-height','10px')
-            .css('left','min(1140px, calc(100% - 580px))')
-            .css('z-index','100')
-            .css('font-family','arial')
-            .css('font-size','14px')
+            .css('left','min(1250px, calc(100% - 470px))')
             .css('background-color', 'white')
-            .css('padding', '5px')
+            .css('padding', '7px')
             .css('border', '1px solid lightgray')
-            .css('border-radius', '5px')
-            .css('text-decoration', 'none')
-            .css('text-align', 'center');
+            .css('color', 'rgb(42, 53, 81)');
 
         var emailHiddenFromWebCrawler = 'c2lwOmRyYWdhbi5pZ25qaWNAd29ybGRsaW5lLmNvbQ==';
 
         var helpBox = $(`<div id="helpBox">
         <b>ESS Login Problems</b><a id="closeHelpBtn" href="javascript:void();" style="float:right;text-decoration:none;">close</a><br>
         If you cannot login to ESS try following:
-        <ul>
+        <ul style="margin-top: 5px">
             <li>Restart your Browser.</li>
             <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
             <li>Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
             <li>Contact the Support in <a href="` + atob(emailHiddenFromWebCrawler) + `">MS Teams</a></li>
+            <li><a href="https://one.myworldline.com/en/global/working-at-worldline/Timesheet" target="_blank">More info<a></li>
         </ul>
         <br>
 
@@ -192,10 +185,10 @@
             .css('border', '1px solid lightgray')
             .css('border-radius', '10px')
             .css('position', 'fixed')
-            .css('bottom', '50px')
-            .css('left','min(1165px, calc(100% - 470px))')
-            .css('width', '550px')
-            .css('height', '200px')
+            .css('bottom', '62px')
+            .css('left','min(1249px, calc(100% - 470px))')
+            .css('width', '457px')
+            .css('height', '219px')
             .css('z-index', 1000)
             .css('font-family', 'arial')
             .css('font-size', '14px')
@@ -210,20 +203,26 @@
     function setButtonStyle(btn) {
 
         btn
+            .css('position','fixed')
+            .css('z-index','100')
             .css('display','inline-block')
+
             .css('text-decoration','none')
             .css('background-color','#66A3C7')
-            .css('border','1px solid #66A3C7')
-            .css('color','white')
-            .css('font-size','15px')
-            .css('font-family','arial')
+
+            .css('border','0')
+            .css('border-radius','5px')
+
+            .css('cursor','pointer')
+
             .css('white-space','nowrap')
-            .css('padding','5px')
-            .css('border-radius','2px')
             .css('veritcal-align','middle')
             .css('text-align','center')
-            .css('border-radius','5px')
-            .css('cursor','pointer');
+            .css('padding','0')
+
+            .css('color','white')
+            .css('font-family','"Source Sans Pro", Tahoma, sans-serif')
+            .css('font-size','16px');
     }
 
     function collectTimmiHours() {
