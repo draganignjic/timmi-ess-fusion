@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.4
+// @version      0.9.5
 // @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -138,7 +138,7 @@
         loginBtn
             .css('width','150px')
             .css('height','40px')
-            .css('bottom','64px')
+            .css('bottom','15px')
             .css('left','min(1250px, calc(100% - 470px))');
 
         loginBtn.click(function(e) {
@@ -156,9 +156,9 @@
         $('body').append(helpBtn);
         helpBtn
             .css('width','150px')
-            .css('height','42px')
+            .css('height','40px')
             .css('bottom','15px')
-            .css('left','min(1250px, calc(100% - 470px))')
+            .css('left','min(1090px, calc(100% - 630px))')
             .css('background-color', 'white')
             .css('padding', '7px')
             .css('border', '1px solid lightgray')
