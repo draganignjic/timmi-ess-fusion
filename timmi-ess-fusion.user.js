@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.5
+// @version      0.9.6
 // @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -16,7 +16,7 @@
 (async () => {
 
     let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
-    let _modernEssLoginUrl = "https://www.corp.worldline.com/irj/portal?NavigationTarget=navurl%3A%2F%2Fbaff536bcf44bbeff1a64b8649c78372&NavMode=10";
+    let _modernEssLoginUrl = "https://gateway.corp.worldline.com/sap/flp?run-mode=standalone&sap-theme=wlbluecrystal@/sap/public/bc/themes/~client-360&appState=lean#Timesheet-entryv2";
 
     if (scriptAlreadyExecuted()) {
         // some users have it installed twice
@@ -142,7 +142,7 @@
             .css('left','min(1250px, calc(100% - 470px))');
 
         loginBtn.click(function(e) {
-            openPopup(_modernEssLoginUrl + '&closeAfterLogin','ESS Login', 1300, 750);
+            openPopup(_modernEssLoginUrl,'ESS Login', 1300, 750);
         });
     }
 
