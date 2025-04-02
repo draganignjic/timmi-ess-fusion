@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.6
+// @version      0.9.7
 // @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -238,7 +238,7 @@
 
         $('tt-date-display').each(function() {
             var dayNumber = $(this).find('span').eq(0).text().replace(/\D/g, '');
-            var day = month.set("date", dayNumber)
+            var day = month.clone().set("date", dayNumber)
             let totalHours = 0;
 
             var hoursAndMinutes = $(this).parent().find('.timeProgress-time-text').find('span').eq(0).text();
