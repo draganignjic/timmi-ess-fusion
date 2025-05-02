@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.7
-// @description  Embed ESS Timesheet in Lucca Timmi - Now opening in a pop up instead of iframe because of Timmi Security Restrictions (CSP)
+// @version      0.9.8
+// @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
 // @include      /sap/
@@ -16,7 +16,9 @@
 (async () => {
 
     let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
-    let _modernEssLoginUrl = "https://gateway.corp.worldline.com/sap/flp?run-mode=standalone&sap-theme=wlbluecrystal@/sap/public/bc/themes/~client-360&appState=lean#Timesheet-entryv2";
+    let _modernEssLoginUrl = "https://gateway.corp.worldline.com/sap/flp?run-mode=standalone&sap-theme=wlbluecrystal@/sap/public/bc/themes/~client-360&appState=lean&startedFromTimmi#Timesheet-entryv2";
+
+    let _loginWindow = null;
 
     if (scriptAlreadyExecuted()) {
         // some users have it installed twice
@@ -40,10 +42,23 @@
         addFillButtonsModernEss();
         makeModernEssCompact();
         setEssWindowTitle();
-        breakOutOfIframe();
+    }
+
+    if (window.location.href.indexOf('/sap/flp') !== -1) {
+        redirectEssShellUrl();
+    }
+
+    function redirectEssShellUrl() {
+
+        if (window.location.href.indexOf('startedFromTimmi') !== -1 && window.location.href.endsWith('#Shell-home')) {
+            window.location.href = _modernEssLoginUrl.replace('&startedFromTimmi', '');
+            return;
+        }
+        setTimeout(redirectEssShellUrl, 500);
     }
 
     function setEssWindowTitle() {
+
         document.title = 'ESS Timesheet - powered by Timmi ESS Fusion script and Tampermonkey';
         setTimeout(setEssWindowTitle, 1000);
     }
@@ -78,24 +93,6 @@
         $('body').append($('<div id="' + duplicateExecutionId + '" style="display:none"></div>'));
         return false;
     }
-
-    function breakOutOfIframe() {
-
-        if (isModernTimeEntryDisplayed()) {
-            if(this != top) {
-                top.location.href = this.location.href;
-            }
-        }
-        setTimeout(breakOutOfIframe, 1000);
-    }
-
-    function isModernTimeEntryDisplayed() {
-
-        return $('#sap-ui-static').length != 0;
-    }
-
-
-    let _loginWindow = null;
 
     function openPopup(url, title, w, h) {
 
@@ -186,8 +183,8 @@
             .css('border-radius', '10px')
             .css('position', 'fixed')
             .css('bottom', '62px')
-            .css('left','min(1249px, calc(100% - 470px))')
-            .css('width', '457px')
+            .css('left','min(1090px, calc(100% - 630px))')
+            .css('width', '550px')
             .css('height', '219px')
             .css('z-index', 1000)
             .css('font-family', 'arial')
