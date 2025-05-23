@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.8
+// @version      0.9.9
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -50,10 +50,21 @@
 
     function redirectEssShellUrl() {
 
-        if (window.location.href.indexOf('startedFromTimmi') !== -1 && window.location.href.endsWith('#Shell-home')) {
-            window.location.href = _modernEssLoginUrl.replace('&startedFromTimmi', '');
-            return;
+        if (window.location.href.indexOf('startedFromTimmi') !== -1) {
+
+            if ($('#LOGIN_MAIN').length > 0) {
+                // SAP Login window which does not work and is skipped after refresh.
+                window.location.reload();
+                return;
+            }
+
+            if (window.location.href.endsWith('#Shell-home')) {
+                // Test by deleting cookis
+                window.location.href = _modernEssLoginUrl.replace('&startedFromTimmi', '');
+                return;
+            }
         }
+
         setTimeout(redirectEssShellUrl, 500);
     }
 
