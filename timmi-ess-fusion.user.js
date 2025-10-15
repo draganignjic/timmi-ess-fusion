@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.9
+// @version      0.9.10
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -147,7 +147,7 @@
             .css('width','150px')
             .css('height','40px')
             .css('bottom','15px')
-            .css('left','min(1250px, calc(100% - 470px))');
+            .css('left','min(1150px, calc(100% - 440px))');
 
         loginBtn.click(function(e) {
             openPopup(_modernEssLoginUrl,'ESS Login', 1300, 750);
@@ -166,7 +166,7 @@
             .css('width','150px')
             .css('height','40px')
             .css('bottom','15px')
-            .css('left','min(1090px, calc(100% - 630px))')
+            .css('left','min(990px, calc(100% - 630px))')
             .css('background-color', 'white')
             .css('padding', '7px')
             .css('border', '1px solid lightgray')
@@ -179,10 +179,10 @@
         If you cannot login to ESS try following:
         <ul style="margin-top: 5px">
             <li>Restart your Browser.</li>
-            <li>Login into the <a href="https://www.corp.worldline.com" target="_blank">worldline portal</a> in another browser tab and then return here.</li>
+            <li>Try to login in another tab <a href="https://gateway.corp.worldline.com/sap/flp?run-mode=standalone&sap-theme=wlbluecrystal@/sap/public/bc/themes/~client-360&#Timesheet-entryv2" target="_blank">here</a>
             <li>Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
             <li>Contact the Support in <a href="` + atob(emailHiddenFromWebCrawler) + `">MS Teams</a></li>
-            <li><a href="https://one.myworldline.com/en/global/working-at-worldline/Timesheet" target="_blank">More info<a></li>
+            <li><a href="https://one.myworldline.com/content/one-myworldline-com/en/global/working-at-worldline/Timesheet" target="_blank">More info<a></li>
         </ul>
         <br>
 
@@ -194,7 +194,7 @@
             .css('border-radius', '10px')
             .css('position', 'fixed')
             .css('bottom', '62px')
-            .css('left','min(1090px, calc(100% - 630px))')
+            .css('left','min(990px, calc(100% - 630px))')
             .css('width', '550px')
             .css('height', '219px')
             .css('z-index', 1000)
