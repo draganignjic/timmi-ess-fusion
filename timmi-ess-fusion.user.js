@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.11
+// @version      0.9.12
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -176,7 +176,7 @@
             <li>Restart your Browser.</li>
             <li>Try to login in another tab <a href="https://apps.myworldline.com/sap/bc/ui2/flp?appState=lean#Timesheet-entryv2" target="_blank">here</a>
             <li>Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
-            <li>Open <a href="https://one.myworldline.com/content/one-myworldline-com/en/global/working-at-worldline/Timesheet" target="_blank">One Worldline Tools Timesheet<a></li>
+            <li>Open <a href="https://one.myworldline.com" target="_blank">One Worldline</a> and search for the Timesheet Tool</li>
             <li>Contact the Support in <a href="` + atob(emailHiddenFromWebCrawler) + `">MS Teams</a></li>
         </ul>
         <br>
