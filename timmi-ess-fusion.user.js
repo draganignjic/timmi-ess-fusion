@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.10
+// @version      0.9.11
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -16,7 +16,7 @@
 (async () => {
 
     let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
-    let _modernEssLoginUrl = "https://gateway.corp.worldline.com/sap/flp?run-mode=standalone&sap-theme=wlbluecrystal@/sap/public/bc/themes/~client-360&appState=lean&startedFromTimmi#Timesheet-entryv2";
+    let _modernEssLoginUrl = "https://apps.myworldline.com/sap/bc/ui2/flp?startedFromTimmi&appState=lean#Timesheet-entryv2";
 
     let _loginWindow = null;
 
@@ -35,7 +35,7 @@
         collectTimmiHours();
     }
 
-    if (window.location.href.indexOf('/sap/flp') !== -1 && window.location.href.indexOf('#Timesheet-entry') !== -1) {
+    if (window.location.href.indexOf('/sap/') !== -1 && window.location.href.indexOf('#Timesheet-entry') !== -1) {
         listenForTimmiHoursModernEss();
         changeShowWeekendDefault();
         addEndOfMonthWarningModernEss();
@@ -44,24 +44,19 @@
         setEssWindowTitle();
     }
 
-    if (window.location.href.indexOf('/sap/flp') !== -1) {
-        redirectEssShellUrl();
-    }
+    redirectEssShellUrl();
 
     function redirectEssShellUrl() {
 
-        if (window.location.href.indexOf('startedFromTimmi') !== -1) {
+        if (window.location.href.indexOf('/sap/') !== -1) {
 
-            if ($('#LOGIN_MAIN').length > 0) {
-                // SAP Login window which does not work and is skipped after refresh.
-                window.location.reload();
-                return;
-            }
+            if (window.location.href.indexOf('startedFromTimmi') !== -1) {
 
-            if (window.location.href.endsWith('#Shell-home')) {
-                // Test by deleting cookis
-                window.location.href = _modernEssLoginUrl.replace('&startedFromTimmi', '');
-                return;
+                if (window.location.href.endsWith('#Shell-home')) {
+                    // Test by deleting cookis
+                    window.location.href = _modernEssLoginUrl.replace('startedFromTimmi', '');
+                    return;
+                }
             }
         }
 
@@ -179,10 +174,10 @@
         If you cannot login to ESS try following:
         <ul style="margin-top: 5px">
             <li>Restart your Browser.</li>
-            <li>Try to login in another tab <a href="https://gateway.corp.worldline.com/sap/flp?run-mode=standalone&sap-theme=wlbluecrystal@/sap/public/bc/themes/~client-360&#Timesheet-entryv2" target="_blank">here</a>
+            <li>Try to login in another tab <a href="https://apps.myworldline.com/sap/bc/ui2/flp?appState=lean#Timesheet-entryv2" target="_blank">here</a>
             <li>Update the Timmi ESS Script <a href="` + _updateUrl + `" target="_blank">here</a></li>
+            <li>Open <a href="https://one.myworldline.com/content/one-myworldline-com/en/global/working-at-worldline/Timesheet" target="_blank">One Worldline Tools Timesheet<a></li>
             <li>Contact the Support in <a href="` + atob(emailHiddenFromWebCrawler) + `">MS Teams</a></li>
-            <li><a href="https://one.myworldline.com/content/one-myworldline-com/en/global/working-at-worldline/Timesheet" target="_blank">More info<a></li>
         </ul>
         <br>
 
