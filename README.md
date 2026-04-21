@@ -21,16 +21,8 @@ Userscript for improving ESS Timesheet usability
 ![Preview](images/install.png)
 
 ## Preview
-#### Before
-This is how ESS looks without the userscript :see_no_evil: :man_facepalming:
-![Preview](images/ess-raw.png)
-
-#### After
-This is how ESS looks with the userscript :heart_eyes:
-![Preview](images/preview.png)
-
 This is how ESS works in combination with Timmi Timesheet :scream:
-![](images/video2.gif)
+![Preview](images/Timmi-ESS-Integration.png)
 
 ## Features
 - Fullscreen Mode
