@@ -25,33 +25,10 @@ This is how ESS works in combination with Timmi Timesheet :scream:
 ![Preview](images/Timmi-ESS-Integration.png)
 
 ## Features
-- Fullscreen Mode
-  - To get rid of scrollbars
-- Chrome and Firefox support
-  - See saved, released, approved and reject colors
-  - Day titles are aligned correctly
-- Favourites
-  - Save workitems
-  - Give them meaningful names
-  - Select them with one click at the top of the worklist
-- Design
-  - ESS is displayed beautifully in all browsers
-- Usability
-  - Enter worktime with "." or ","
-  - Save with pressing the Enter Key
-  - No Session Timeout
-  - Weeks selection shortcuts/overview
-  - Hide the weekend
-  - No unnecessary scrollbars
-  - Month end warning
-
-- Timmi Timesheet integration (For employees in Switzerland) 
-  - ESS is embedded in Timmi
+- Timmi Timesheet integration
+  - ESS is embedded in Timmi as a PopUp
   - Synchronization of workhours. ESS shows you the differences that you need to book on projects
   - Book all remaining hours with one click on a project
-  - "Check for Updates" Feature
-  - Automatic conversion of minutes to decimal hours (8h24m => 8.4 hours)
-
 
 #### Credits
 Dragan Ignjic
