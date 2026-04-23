@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.12
+// @version      0.9.13
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -232,7 +232,7 @@
 
         setTimeout(collectTimmiHours, 500);
 
-        var dateText = $('tt-timesheet-picker span').eq(0).text()?.trim();
+        var dateText = $('tt-timesheet-picker span:contains("20")').eq(0).text()?.trim();
         if (!dateText) {
             return;
         }
