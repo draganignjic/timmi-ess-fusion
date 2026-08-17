@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timmi ESS Fusion
 // @namespace    https://github.com/draganignjic/timmi-ess-fusion/
-// @version      0.9.13
+// @version      0.9.14
 // @description  Embed ESS Timesheet in Lucca Timmi
 // @author       Dragan Ignjic (Saferpay)
 // @include      /sps.ilucca.ch/timmi
@@ -16,7 +16,7 @@
 (async () => {
 
     let _updateUrl = "https://raw.githubusercontent.com/draganignjic/timmi-ess-fusion/master/timmi-ess-fusion.user.js";
-    let _modernEssLoginUrl = "https://apps.myworldline.com/sap/bc/ui2/flp?startedFromTimmi&appState=lean#Timesheet-entryv2";
+    let _modernEssLoginUrl = "https://perf.myworldline.com/sap/bc/ui5_ui5/sap/zy_wl_time/index.html";
 
     let _loginWindow = null;
 
@@ -35,32 +35,13 @@
         collectTimmiHours();
     }
 
-    if (window.location.href.indexOf('/sap/') !== -1 && window.location.href.indexOf('#Timesheet-entry') !== -1) {
+    if (window.location.href.indexOf('sap/zy_wl_time/') !== -1) {
         listenForTimmiHoursModernEss();
         changeShowWeekendDefault();
         addEndOfMonthWarningModernEss();
         addFillButtonsModernEss();
         makeModernEssCompact();
         setEssWindowTitle();
-    }
-
-    redirectEssShellUrl();
-
-    function redirectEssShellUrl() {
-
-        if (window.location.href.indexOf('/sap/') !== -1) {
-
-            if (window.location.href.indexOf('startedFromTimmi') !== -1) {
-
-                if (window.location.href.endsWith('#Shell-home')) {
-                    // Test by deleting cookis
-                    window.location.href = _modernEssLoginUrl.replace('startedFromTimmi', '');
-                    return;
-                }
-            }
-        }
-
-        setTimeout(redirectEssShellUrl, 500);
     }
 
     function setEssWindowTitle() {
